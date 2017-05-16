@@ -1,0 +1,336 @@
+// ----------------------- RESET PADDING AND MARGIN ---------------------------
+* {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
+body {
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: fixed;
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+}
+li {
+  list-style: none;
+  display: inline-block;
+}
+a {
+  text-decoration: none;
+}
+// ----------------------- CLOSE RESET PADDING AND MARGIN ---------------------
+
+
+
+
+// ------------------------------ BACKGROUND ----------------------------------
+.background {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: -3;
+  background-size: cover;
+  background-position: center center;
+
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+
+  img {
+    background-size: cover;
+    background-position: center center;
+
+    height: 100vh;
+    width: 100vw;
+    min-width: 900px;
+    min-height: 470px;
+  }
+}
+.darkeningOverlay {
+  position: absolute;
+  top: 0;
+  z-index: -2;
+  background-color: rgba(0, 0, 0, 0.2);
+
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  min-width: 900px;
+}
+.overlayPNG {
+  position: absolute;
+  top: 0;
+  z-index: -1;
+  background-size: cover;
+  background-position: center center;
+
+  height: 100vh;
+  width: 100vw;
+  min-width: 900px;
+  overflow: hidden;
+  img {
+    background-size: cover;
+    background-position: center center;
+
+    min-width: 900px;
+    height: 100vh;
+    width: 100vw;
+  }
+}
+// ------------------------------ CLOSE BACKGROUND ----------------------------
+
+
+
+
+// ----------------------------------- HEADER ---------------------------------
+header {
+  border: 1px solid gold;
+  min-width: 950px !important;
+  height: 10vh;
+  box-sizing: border-box;
+  padding: 18px 0px;
+  color: white;
+  text-align: center;
+  font-weight: 100;
+  display: block;
+
+  .date {
+    position: relative;
+    right: 24px;
+    top: 0;
+    font-size: 15px;
+    float: right;
+  }
+
+  .logo {
+    width: 75px;
+    position: relative;
+    left: 24px;
+    top: 0;
+    color: gold;
+    float: left;
+    box-sizing: border-box;
+    font-weight: normal;
+    img {
+      box-sizing: border-box;
+      width: 75px; // ***** 60px for Prod
+    }
+  }
+
+
+  section.googleSearch {
+    min-width: 950px !important;
+    width: 100vw;
+
+    position: absolute;
+    top: 0vh;
+    left: 0;
+    right: 0;
+    margin: auto;
+
+    form.myGoogleSearchForm {
+      position: relative;
+      margin: auto;
+
+      i.ion-ios-search-strong {
+        position: absolute;
+        z-index: -1;
+        top: 1.5vh;
+        font-size: 20px;
+        color: rgba(255, 255, 255, 0.8);
+        transition: all 1s ease;
+      }
+
+
+      input[type="text"] {
+        padding: 6px;
+        color: white;
+        outline: none;
+        font-size: 18px;
+        font-weight: 100;
+        background-color: transparent;
+        border: 1px solid transparent;
+        border-bottom: 1px solid white;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        transition: background-color .5s ease, width .5s ease;
+        width: 200px;
+
+        &::-webkit-input-placeholder {
+          color: rgba(255,255,255,0.4);
+          font-size: 16px;
+        }
+
+        &:focus {
+          background-color: rgba(0,0,0,0.2);
+          width: 310px;
+        }
+      }
+    }
+  }
+}
+// ----------------------------- CLOSE HEADER ---------------------------------
+
+
+
+
+// ----------------------------------- MAIN -----------------------------------
+main {
+  border: 1px solid red;
+  width: 100vw;
+  height: 80vh;
+  min-height: 450px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
+  text-align: center;
+  box-sizing: border-box;
+  color: white;
+
+  .darkenBackground {
+    position: absolute;
+    top: -10vh;
+    left: 0;
+    right: 0;
+    box-sizing: border-box;
+    background-color: rgba(0,0,0,0.4);
+    height: 100vh;
+    width: 100vw;
+    z-index: 2;
+    cursor: pointer;
+  }
+  section.welcomeMessage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100vw;
+    height: 80vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    box-sizing: border-box;
+
+    .addMoodflowAsHomepage {
+      position: absolute;
+      width: 770px;
+      left: 0;
+      right: 0;
+      margin: auto;
+      z-index: 3;
+      box-sizing: border-box;
+
+      padding: 65px 80px;
+      background-color: rgba(0,0,0,1);
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 19px;
+
+      #firstTimeClose {
+        cursor: pointer;
+        top: -30px;
+        right: -30px;
+        position: absolute;
+        display: inline-block !important;
+
+        color: white !important;
+      }
+    }
+  }
+}
+// --------------------------------- CLOSE MAIN -------------------------------
+
+
+
+
+
+// ------------------------------- FOOTER -------------------------------------
+footer {
+  border: 1px solid gold;
+  min-width: 950px !important;
+  height: 10vh;
+  position: relative;
+
+  .ion-gear-a {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 22px;
+    cursor: pointer;
+    bottom: 16px;
+    left: 24px;
+    transition: color .5s ease;
+    &:hover {
+      color: rgba(255, 255, 255, 1);
+    }
+  }
+
+  .picCredit {
+    text-align: center;
+    font-weight: 100;
+    font-size: 12px;
+    position: absolute;
+    bottom: 16px;
+    right: 24px;
+    color: rgba(255, 255, 255, 0.8);
+
+    #picAuthor{
+      a {
+        color: rgba(255, 255, 255, 0.8);
+      }
+      .myAnchor {
+        color: rgba(255, 255, 255, 0.8);
+        transition: color .4s ease;
+        &:hover {
+          color: white;
+        }
+      }
+    }
+  }
+
+  .logoutpopup {
+    display: none;
+    position: absolute;
+    bottom: 50px;
+    left: 50px;
+    background-color: rgba(255,255,255,0.85);
+    height: 69px;
+    width: 130px;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    box-sizing: border-box;
+    font-weight: 100;
+    color: black;
+    text-align: left;
+
+    label {
+      cursor: pointer;
+    }
+
+    input {
+      margin-bottom: 14px;
+      cursor: pointer;
+    }
+
+    .logoutbutton{
+      transition: color .5s ease;
+      margin-bottom: 15px;
+      &:hover {
+        color: tomato;
+        cursor: pointer;
+      }
+    }
+  }
+}

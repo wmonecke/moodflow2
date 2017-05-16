@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta   charset="utf-8">
+    <title> New Tab </title>
+    <link   rel="stylesheet"       href="./css/styles.min.css">
+    <link   rel="stylesheet"       href="./css/ionicons.min.css">
+  </head>
+
+
+  <body>
+<!-- BACKGROUND --------------------------------------------------------------->
+    <div class="background">
+      <img id="background" src="" alt="Background Image">
+    </div>
+    <div class="darkeningOverlay"></div>
+    <div class="overlayPNG">
+      <img src="./img/overlay/overlay.png" alt="Overlay">
+    </div>
+<!-- CLOSE BACKGROUND --------------------------------------------------------->
+
+<!-- HEADER (LOGO/ DATE / SEARCHBAR) ------------------------------------------>
+    <header>
+      <nav>
+        <ul id="nav">
+          <li class="logo">
+            <img src="./img/moodflow.png" alt="moodflow Logo">
+          </li>
+
+          <li class="date signin">
+
+          </li>
+        </ul>
+      </nav>
+
+      <section class="googleSearch"  >
+        <!-- *ngIf="hasUserSubmitted === true && user.searchbar === true" -->
+        <form class="myGoogleSearchForm" method="get" action="https://www.google.com/search">
+          <i id="ion-ios-search-strong" class="ion-ios-search-strong"></i>
+          <input id="placeholder" focusout="removePlaceholder()" type="text"  name="q">
+        </form>
+      </section>
+    </header>
+<!-- CLOSE HEADER (LOGO/ DATE / SEARCHBAR) ------------------------------------>
+
+<!-- MAIN CONTENT ------------------------------------------------------------->
+    <main>
+      <section class="welcomeMessage">
+        <div class="addMoodflowAsHomepage">
+          <i (click)="hasSetHomePage()" id="firstTimeClose" class="ion-close-round"></i>
+
+          Dear, user: <br><br>
+          Thank you so much, for giving moodflow a try.<br><br>
+          We hope you enjoy it as much as we do. We want you to know that we are constantly working to improve it.
+          <br><br>
+          Kind regards,<br><br>
+          -  Your moodflow team.
+        </div>
+      </section>
+      <div class="darkenBackground" (click)="hasSetHomePage()" *ngIf="firstTime.message === 'nomood' && weOnline"></div>
+
+      <section class="login">
+
+      </section>
+
+    </main>
+<!-- CLOSE MAIN CONTENT ------------------------------------------------------->
+
+
+<!-- FOOTER ------------------------------------------------------------------->
+    <footer>
+      <section class="picCredit">
+        <p id="picLocation"></p>
+        <p id="picAuthor"></p>
+      </section>
+
+      <div class="logoutpopup" (mouseleave)="logoutFadeOut()">
+        <label class="move" for="searchbar">Searchbar:&nbsp;</label>
+        <input class="move" (click)="noSearchbar()" id="searchbar" type="checkbox" checked name="searchbar" value=""> <br>
+        <label class="move logoutbutton" (click)=logout()>Log Out</label>
+      </div>
+      <i id="logoutFadeIn" class="ion-gear-a" (click)="logoutFadeIn()"></i>
+    </footer>
+<!-- CLOSE FOOTER ------------------------------------------------------------->
+
+
+    <script type="text/javascript"  src="./js/moment.js"></script>
+    <script type="text/javascript"  src="./js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript"  src="./app.js"></script>
+    <script type="text/javascript"  src="./interface.js"></script>
+  </body>
+</html>
