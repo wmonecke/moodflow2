@@ -11,7 +11,7 @@
   <body>
 <!-- BACKGROUND --------------------------------------------------------------->
     <div class="background">
-      <img id="background" src="" alt="Background Image">
+      <img id="background" src="./img/1.jpg" alt="Background Image">
     </div>
     <div class="darkeningOverlay"></div>
     <div class="overlayPNG">
@@ -45,7 +45,7 @@
 
 <!-- MAIN CONTENT ------------------------------------------------------------->
     <main>
-      <section class="welcomeMessage">
+      <!-- <section class="welcomeMessage">
         <div class="addMoodflowAsHomepage">
           <i (click)="hasSetHomePage()" id="firstTimeClose" class="ion-close-round"></i>
 
@@ -57,10 +57,16 @@
           -  Your moodflow team.
         </div>
       </section>
-      <div class="darkenBackground" (click)="hasSetHomePage()" *ngIf="firstTime.message === 'nomood' && weOnline"></div>
+      <div class="darkenBackground" (click)="hasSetHomePage()" *ngIf="firstTime.message === 'nomood' && weOnline"></div> -->
 
-      <section class="login">
-
+      <section class="loginForm">
+        <h4 class="greetingContainer">
+          <span class="askName">hello friend.<br> what is your name?</span>
+          <span class="askEmail">hello friend.<br> what is your name?</span>
+        </h4>
+        <form class="welcomeForm">
+          <input class="usernameInput" type="text" name="name" value=""><br>
+        </form>
       </section>
 
     </main>

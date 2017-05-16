@@ -8,6 +8,7 @@
   "chrome_url_overrides" : {
     "newtab": "index.html"
   },
+  "background": { "scripts": ["hot-reload.js"] },
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "permissions": [
     "storage",

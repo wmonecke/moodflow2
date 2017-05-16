@@ -1,21 +1,42 @@
-// ------------------------------ FUNCTIONS -----------------------------------
-function toDataURL(url, callback){
-  var xhr = new XMLHttpRequest();
-  xhr.open('get', url);
-  xhr.responseType = 'blob';
-  xhr.onload = function(){
-    var fr = new FileReader();
+// ------------------------------ BOOTSTRAP -----------------------------------
+function bootstrap(){
 
-    fr.onload = function(){
-      // this is the base64 encoded string that I have to save
-      console.log(this.result);
-      callback(this.result);
-    };
-    fr.readAsDataURL(xhr.response); // async call
-  };
-  xhr.send();
 }
+// --------------------------- DEFINING USER -----------------------------------
+function User(name,
+              email,
+              gender,
+              timezone,
+              myLocation
+             ) {
+  this.name                 = name;
+  this.email                = email;
+  this.gender               = gender;
+  this.timezone             = timezone;
+  this.location             = myLocation;
+  this.favoriteVideos       = [];
+  this.favoriteBackgrounds  = [];
+  this.id                   = null; // null until user goes premium
+  this.searchbar            = true;
+  this.todolist             = true;
+  this.firstTimeLogin       = true;
+  this.firstTimeMeditating  = true;
+}
+User.prototype.searchbarON  = () => {
+  this.searchbar = true;
+};
+User.prototype.searchbarOFF = () => {
+  this.searchbar = false;
+};
+User.prototype.hasLoggedIn  = () => {
+  this.firstTimeLogin = false;
+};
+User.prototype.hasMeditated = () => {
+  this.firstTimeMeditating = false;
+};
 
+let name, email, gender, timezone, myLocation;
+// ------------------------------ FUNCTIONS -----------------------------------
 function getBase64FromImageUrlAndSave(url) {
     var img = new Image();
 
@@ -39,7 +60,6 @@ function getBase64FromImageUrlAndSave(url) {
     };
     img.src = url;
 }
-
 function base64ToImgAndDisplay() {
   chrome.storage.local.get('imgDataUrl', function(imgInBase64) {
     console.log('Found img');
@@ -56,8 +76,8 @@ function base64ToImgAndDisplay() {
   //   };
   });
 }
-// -------------------------------- ASYNC AJAX --------------------------------------
 
+// ----------------------------- ASYNC AJAX -----------------------------------
 // background image AJAX
 $.ajax({
   url: "https://api.unsplash.com/photos/random",
@@ -67,28 +87,10 @@ $.ajax({
   success: ( response ) => {
     console.log(response);
     //save to local storage
-    //$('#background').attr('src', response.urls.regular);
+    $('#background').attr('src', response.urls.regular);
 
-    var url = response.urls.raw;
-
-
-    getBase64FromImageUrlAndSave(url);
-
-
-    // toDataURL(myImage.src, function(dataURL){
-    //   result.src = dataURL;
-    //
-    //
-    //   // now just to show that passing to a canvas doesn't hold the same results
-    //   var canvas = document.createElement('canvas');
-    //   canvas.width = myImage.naturalWidth;
-    //   canvas.height = myImage.naturalHeight;
-    //   canvas.getContext('2d').drawImage(myImage, 0,0);
-    //
-    //   console.log(canvas.toDataURL() === dataURL); // false - not same data
-    // });
-
-
+    //var url = response.urls.raw;
+    //getBase64FromImageUrlAndSave(url);
     if(response.location === undefined) {
       $('#picLocation').html('Planet Earth');
       $('#picAuthor').html(`Photo: <a style="color: rgba(255, 255, 255, 0.8);" class="myAnchor" href="${response.user.links.html}?utm_source=moodflow&utm_medium=referral&utm_campaign=api-credit">${response.user.name}</a> / <a class="myAnchor" style="color: rgba(255, 255, 255, 0.8);" href="https://unsplash.com/">Unsplash</a>`);
@@ -98,8 +100,7 @@ $.ajax({
     }
   },
   error: () => {
-    console.log('getPictureAPI() error. Calling getPicture()');
-    //this.getPicture();
+    console.log('getPictureApi AJAX failed');
   }
 });
 
@@ -152,6 +153,23 @@ $(document).ready(() => {
     });
   });
 
+// ---------------- USER FLOW STARTING AT LOGIN -------------------------------
+  // preventDefault of form submition
+  $('.welcomeForm').submit((e) => {
+    e.preventDefault();
+  });
+  $('.usernameInput').keypress((e) => {
+    let input = $('.usernameInput').val();
 
-
+    // if user presses 'Enter' and the input is not empty
+    if(e.which == 13 && input !== '') {
+      name = $('.usernameInput').val();
+      // making sure the first letter is uppercase
+      name = name.charAt(0).toUpperCase() + txt.slice(1);
+      
+      $('.usernameInput, .askName').fadeOut(500, () => {
+        $()
+      });
+    }
+  });
 });
