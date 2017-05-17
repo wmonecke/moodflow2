@@ -21,7 +21,24 @@ li {
 a {
   text-decoration: none;
 }
-
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: white;
+  background-color: transparent;
+  -webkit-box-shadow: 0 0 0px 0px transparent inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+.highlight {
+  color: gold;
+}
 // ----------------------- CLOSE RESET PADDING AND MARGIN ---------------------
 
 
@@ -56,7 +73,7 @@ a {
   position: absolute;
   top: 0;
   z-index: -2;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.4);
 
   overflow: hidden;
   height: 100vh;
@@ -279,6 +296,12 @@ main {
       font-weight: bold;
       font-size: 64px;
       letter-spacing: -1px;
+      .askEmail {
+        display: none;
+      }
+      .askGender {
+        display: none;
+      }
     }
 
     form {
@@ -301,6 +324,87 @@ main {
         background-color: transparent;
         border: 1px solid transparent;
         border-bottom: 1px solid white;
+        transition: all .5s ease;
+        &:focus {
+          border-bottom-color: gold;
+        }
+      }
+      .emailInput {
+        display: none;
+      }
+      .noEmail {
+        display: none;
+        margin-top: 10px;
+        cursor: pointer;
+        font-weight: 100;
+      }
+
+
+      .control {
+        font-family: arial;
+        display: block;
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 15px;
+        padding-top: 3px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      .control input {
+        position: absolute;
+        z-index: -1;
+        opacity: 0;
+      }
+
+      .control_indicator {
+        position: absolute;
+        top: 2px;
+        left: 0;
+        height: 20px;
+        width: 20px;
+        background: #e6e6e6;
+        border: 0 solid #000000;
+      }
+
+      .control input:focus ~ .control_indicator,
+      .control:hover input ~ .control_indicator {
+        background: white;
+      }
+
+      .control input:checked ~ .control_indicator {
+        background: #ffd700;
+      }
+
+      .control input:checked:focus ~ .control_indicator,
+      .control:hover input:not([disabled]):checked ~ .control_indicator {
+        background-color: #ffd700;
+      }
+
+      .control input:disabled ~ .control_indicator {
+        background: #e6e6e6;
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      .control_indicator:after {
+        box-sizing: unset;
+        content: '';
+        position: absolute;
+        display: none;
+      }
+
+      .control input:checked ~ .control_indicator:after {
+        display: block;
+      }
+
+      .control-checkbox .control_indicator:after {
+        left: 8px;
+        top: 4px;
+        width: 3px;
+        height: 8px;
+        border: solid black;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
       }
     }
   }
