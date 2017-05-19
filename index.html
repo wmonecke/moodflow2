@@ -44,9 +44,9 @@
 
 <!-- MAIN CONTENT ------------------------------------------------------------->
     <main>
-      <!-- <section class="welcomeMessage">
+      <section class="welcomeMessage">
         <div class="addMoodflowAsHomepage">
-          <i (click)="hasSetHomePage()" id="firstTimeClose" class="ion-close-round"></i>
+          <i id="firstTimeClose" class="ion-close-round"></i>
 
           Dear, user: <br><br>
           Thank you so much, for giving moodflow a try.<br><br>
@@ -56,10 +56,12 @@
           -  Your moodflow team.
         </div>
       </section>
-<div class="darkenBackground" (click)="hasSetHomePage()" *ngIf="firstTime.message === 'nomood' && weOnline"></div> -->
+
+      <div class="darkenBackground"></div>
+
       <section class="loginForm">
         <h4 class="greetingContainer">
-          <span class="askName">hello, friend.<br> what is your <span class="highlight">name</span> ?</span>
+          <span class="askName">hello, friend.<br> what is your <span class="highlight">name</span>?</span>
           <span class="askEmail">hello friend.<br> what is your email?</span>
           <span class="askGender"></span>
         </h4>
@@ -70,29 +72,42 @@
           <p class="noEmail">I want to stay logged out.</p>
 
           <div class="control-group">
-            <label class="control control-checkbox">
+            <label class="guy control control-checkbox">
               <input type="checkbox"/>
-              <div class="control_indicator"></div>
+              <div class="guycheckbox afterGender control_indicator"></div>
             </label>
 
-            <label class="control control-checkbox">
+            <label class="girl control control-checkbox">
               <input type="checkbox" />
-              <div class="control_indicator"></div>
+              <div class="girlcheckbox afterGender control_indicator"></div>
             </label>
+
+            <p class="noGender afterGender">I would rather not say.</p>
           </div>
-
-
-
-
-
-
-
-
 
         </form>
 
       </section>
 
+      <section class="dashboard">
+        <div class="container">
+          <h4>
+            <span class="greeting"></span>
+          </h4>
+
+          <div class="buttonsContainer" *ngIf="weOnline === true">
+            <button id="meditateButton"  data-balloon-length="medium" data-balloon="...and reduce stress & anxiety in a 5 min. session" data-balloon-pos="down" type="button" name="button">Meditate</button>
+            <button id="reflectButton"   data-balloon-length="medium" data-balloon="...and get insight into what really makes you happy :)" data-balloon-pos="down" type="button" name="button">Reflect</button>
+            <button id="motivateButton"  data-balloon-length="medium" data-balloon="...and get your daily dose of inspiration." data-balloon-pos="down" type="button" name="button">Motivate</button>
+          </div>
+        </div>
+
+
+      </section>
+
+
+      <div class="closeiframe"></div>
+      <iframe class="myiframe" width="850" volume="50" height="455" src="" frameborder="1" allowfullscreen></iframe>
     </main>
 <!-- CLOSE MAIN CONTENT ------------------------------------------------------->
 
