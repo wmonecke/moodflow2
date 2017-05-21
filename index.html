@@ -18,6 +18,7 @@
     <div class="overlayPNG">
       <img src="./img/overlay/overlay.png" alt="Overlay">
     </div>
+    <img id="source_img" crossOrigin="Anonymous" src="" alt="">
 <!-- CLOSE BACKGROUND --------------------------------------------------------->
 
 <!-- HEADER (LOGO/ DATE / SEARCHBAR) ------------------------------------------>
@@ -41,6 +42,22 @@
       </section>
     </header>
 <!-- CLOSE HEADER (LOGO/ DATE / SEARCHBAR) ------------------------------------>
+
+
+
+<!-- SPINNER ------------------------------------------------------------------>
+    <div class="spinnerContainer">
+      <h4>
+        moodflow is getting ready for you
+      </h4>
+      <div class="loader">Loading...</div>
+      <div class="typed typed-fade-out">
+
+      </div>
+    </div>
+<!-- CLOSE SPINNER ------------------------------------------------------------>
+
+
 
 <!-- MAIN CONTENT ------------------------------------------------------------->
     <main>
@@ -95,19 +112,37 @@
             <span class="greeting"></span>
           </h4>
 
-          <div class="buttonsContainer" *ngIf="weOnline === true">
+          <div class="buttonsContainer">
             <button id="meditateButton"  data-balloon-length="medium" data-balloon="...and reduce stress & anxiety in a 5 min. session" data-balloon-pos="down" type="button" name="button">Meditate</button>
             <button id="reflectButton"   data-balloon-length="medium" data-balloon="...and get insight into what really makes you happy :)" data-balloon-pos="down" type="button" name="button">Reflect</button>
             <button id="motivateButton"  data-balloon-length="medium" data-balloon="...and get your daily dose of inspiration." data-balloon-pos="down" type="button" name="button">Motivate</button>
           </div>
         </div>
-
-
       </section>
 
+      <section class="chart">
+        <div class="container">
+          <h4>
+            <span class="yourMoodflow">Your moodflow:</span>
+          </h4>
 
+          <div class="canvasContainer">
+            <canvas id="myChart" style="font-size: 30px;"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Motivational video iframe and background -->
       <div class="closeiframe"></div>
-      <iframe class="myiframe" width="850" volume="50" height="455" src="" frameborder="1" allowfullscreen></iframe>
+      <iframe id="myiframe"
+              class="myiframe"
+              width="850"
+              volume="50"
+              height="455"
+              src=""
+              frameborder="0"
+              allowfullscreen>
+      </iframe>
     </main>
 <!-- CLOSE MAIN CONTENT ------------------------------------------------------->
 
@@ -127,11 +162,11 @@
       <i id="logoutFadeIn" class="ion-gear-a" (click)="logoutFadeIn()"></i>
     </footer>
 <!-- CLOSE FOOTER ------------------------------------------------------------->
-
-
-    <script type="text/javascript"  src="./js/moment.js"></script>
     <script type="text/javascript"  src="./js/jquery-3.2.1.min.js"></script>
-    <script type="text/javascript"  src="./app.js"></script>
+    <script type="text/javascript"  src="./js/typed.js"></script>
+    <script type="text/javascript"  src="./js/JIC.js"></script>
+    <script type="text/javascript"  src="./js/moment.js"></script>
+    <script type="text/javascript"  src="./js/chart.js"></script>
     <script type="text/javascript"  src="./interface.js"></script>
   </body>
 </html>

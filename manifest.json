@@ -14,9 +14,7 @@
     "storage",
     "unlimitedStorage",
     "activeTab",
-    "http://*/",
-    "https://*/",
-    "https://api.unsplash.com/photos/random",
-    "http://api.forismatic.com/api/1.0/"
+    "https://www.youtube.com/iframe_api",
+    "https://api.unsplash.com/photos/random"
   ]
 }
