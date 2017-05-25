@@ -43,12 +43,6 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 				delayInMinutes: 180,
 				periodInMinutes: 180
 			});
-		} else if (changeFrequency === 10) {
-			console.log('changeFrequency', changeFrequency);
-			chrome.alarms.create('backgroundCheck', {
-				delayInMinutes: 144,
-				periodInMinutes: 144
-			});
 		} else if (changeFrequency === 12) {
 			console.log('changeFrequency', changeFrequency);
 			chrome.alarms.create('backgroundCheck', {
@@ -67,13 +61,8 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 				delayInMinutes: 30,
 				periodInMinutes: 30
 			});
-		} else if (changeFrequency === 100) {
-			console.log('changeFrequency', changeFrequency);
-			chrome.alarms.create('backgroundCheck', {
-				delayInMinutes: 0.5,
-				periodInMinutes: 1
-			});
 		}
+
 	});
 });
 
@@ -111,7 +100,7 @@ function compressImageAndSave() {
 	let compressedSRC;
 
 	//An Integer from 0 to 100
-	let quality = 50;
+	let quality = 55;
 	// output file format (jpg || png)
 	let output_format = 'jpg';
 	//This function returns an Image Object
