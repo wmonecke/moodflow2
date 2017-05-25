@@ -588,6 +588,29 @@ main {
     }
   }
 
+  section.moodInput {
+    border: 1px solid blue;
+    padding: 80px 0;
+    position: fixed;
+    margin: auto;
+    width: 92vw;
+    height: 500px;
+    box-sizing: border-box;
+    border-radius: 7px;
+    text-shadow: 1px 1px 1px rgba(100, 100, 100, 0.6);
+
+    div.container {
+      border: 1px solid red;
+      min-width: 1000px;
+      position: relative;
+      top: 40px;
+      box-sizing: border-box;
+      margin: auto;
+      height: 200px;
+      width: 500px;
+    }
+  }
+
   section.chart {
     display: none;
     padding: 60px 0;
@@ -717,7 +740,7 @@ footer {
     bottom: 50px;
     left: 50px;
     background-color: rgba(0,0,0,0.85);
-    width: 620px;
+    width: 375px;
     border-radius: 5px;
     padding: 10px;
     font-size: 18px;

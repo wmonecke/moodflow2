@@ -15,6 +15,10 @@ function bootstrapApp() {
 			return;
 		}
 
+        // HIDING DASHBOARD TO DEVELOP MOOD INPUT FLOW
+        $('section.dashboard').css('display', 'none');
+
+
 		user = foundUser;
 		// this function is in charge of displaying stuff in the dashboard
 		// for example it is in charge of displaying the users name, searchbar or quotes
@@ -439,7 +443,35 @@ function renderDashboard(emitter) {
 		$('input.searchbar').attr('checked', false);
 	}
 
-  $('#frequencyNumber').html(frequencyNumber);
+
+	switch(frequencyNumber) {
+			case 1:
+				$('#frequencyNumber').html('once a day');
+			    break;
+			case 3:
+				$('#frequencyNumber').html('every 8 hours');
+                break;
+			case 5:
+			    $('#frequencyNumber').html('every 5 hours');
+			    break;
+			case 8:
+			    $('#frequencyNumber').html('every 3 hours');
+			    break;
+			case 12:
+			    $('#frequencyNumber').html('every 2 hours');
+				break;
+			case 24:
+                $('#frequencyNumber').html('every hour');
+                break;
+			case 48:
+				$('#frequencyNumber').html('every 30 minutes');
+				break;
+            case 96:
+                $('#frequencyNumber').html('every 15 minutes');
+                break;
+			default:
+
+	}
 }
 function injectYTVideo() {
 	var videos = ['https://www.youtube.com/embed/SuPLxQD4akQ?autoplay=1', 'https://www.youtube.com/embed/26U_seo0a1g?autoplay=1', 'https://www.youtube.com/embed/Yb-OYmHVchQ?autoplay=1', 'https://www.youtube.com/embed/K2bw52VjJLM?autoplay=1', 'https://www.youtube.com/embed/eRaTpTVTENU?autoplay=1', 'https://www.youtube.com/embed/2_fDhqRk_Ro?autoplay=1', 'https://www.youtube.com/embed/DvtxOzO6OAE?autoplay=1', 'https://www.youtube.com/embed/D_Vg4uyYwEk?autoplay=1',
@@ -744,9 +776,17 @@ $(document).ready(() => {
 
             case 'every 30 minutes':
 
-                user.background.backgroundChangeFrequency = 48;
+                user.background.backgroundChangeFrequency = 96;
                 chrome.storage.sync.set(user, function() {
-                    $('#frequencyNumber').html('every 30 minutes');
+                    $('#frequencyNumber').html('every 15 minutes');
+                });
+                break;
+
+            case 'every 15 minutes':
+
+                user.background.backgroundChangeFrequency = 96;
+                chrome.storage.sync.set(user, function() {
+                    $('#frequencyNumber').html('every 15 minutes');
                 });
                 break;
 
@@ -812,6 +852,14 @@ $(document).ready(() => {
                 user.background.backgroundChangeFrequency = 24;
                 chrome.storage.sync.set(user, function() {
                     $('#frequencyNumber').html('every hour');
+                });
+                break;
+
+            case 'every 15 minutes':
+
+                user.background.backgroundChangeFrequency = 48;
+                chrome.storage.sync.set(user, function() {
+                    $('#frequencyNumber').html('every 30 minutes');
                 });
                 break;
 

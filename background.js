@@ -61,8 +61,12 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 				delayInMinutes: 30,
 				periodInMinutes: 30
 			});
+		} else if (changeFrequency === 96) {
+			chrome.alarms.create('backgroundCheck', {
+				delayInMinutes: 15,
+				periodInMinutes: 15
+			});
 		}
-
 	});
 });
 
@@ -125,6 +129,7 @@ function compressImageAndSave() {
         }
     }
 }
+
 function jic(source_img_obj, quality, output_format) {
 
 	var mime_type = "image/jpeg";
