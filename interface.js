@@ -8,17 +8,16 @@ function bootstrapApp() {
 	var savedUser;
 	chrome.storage.sync.get(savedUser, function(foundUser) {
 		if (foundUser.name === undefined || '') {
-			$('.logo, .date, footer, section.dashboard').css('display', 'none');
+			$('.logo, .date, footer, section.dashboard, section.googleSearch').css('display', 'none');
 			$('section.welcomeMessage, .darkenBackground').css('display', 'flex');
 			typedjs();
 			return;
 		}
 
 		user = foundUser;
-		fillInformation();
-
-		// start background image handler
-		backgroundFrequency();
+		// this function is in charge of displaying stuff in the dashboard
+		// for example it is in charge of displaying the users name, searchbar or quotes
+		renderDashboard();
 		return;
 	});
 
@@ -38,9 +37,6 @@ function bootstrapApp() {
 		base64ToImgAndDisplay();
 		return;
 	});
-
-
-
 	// check if background is available
 }
 // ---------------------- DEFINING USER CONSTRUCTOR----------------------------
@@ -65,7 +61,7 @@ function User(
 	this.background = {
 		// times that a background should change in a day.
 		// 3 is default. User can choose between 1,3,5,8,10,12,14.
-		backgroundChangeFrequency: 100,
+		backgroundChangeFrequency: 3,
 
 		// object that holds how many times the background has been changed today
 		hasChangedToday: {
@@ -302,7 +298,7 @@ function compressImageAndSave(frequencyEmitter) {
     // frequencyEmitter is 1 if this function is triggered by a chrome.alarm
     if (frequencyEmitter === 1) {
 
-        savedBackground.dataURL = compressedSRC;
+      savedBackground.dataURL = compressedSRC;
 
     	// save to chrome.storage
     	chrome.storage.local.set(savedBackground, function() {
@@ -328,51 +324,7 @@ function compressImageAndSave(frequencyEmitter) {
 		return;
 	});
 
-} // works in tandem with getBackgroundAPI()
-function changeBackgroundHandler() {
-	// this function changes the background image 3 times per day depending on the current times
-	let now = new Date();
-
-
-}
-function backgroundFrequency() {
-	let changeFrequency = user.background.backgroundChangeFrequency;
-
-	if (changeFrequency === 1) {
-		console.log('changeFrequency', changeFrequency);
-		chrome.alarms.create('backgroundCheck', { delayInMinutes: 1440, periodInMinutes: 1440 });
-	} else if (changeFrequency === 3) {
-		console.log('changeFrequency', changeFrequency);
-		chrome.alarms.create('downloadNewBackground', { delayInMinutes: 480, periodInMinutes: 480 });
-	} else if (changeFrequency === 5) {
-		console.log('changeFrequency', changeFrequency);
-		chrome.alarms.create('backgroundCheck', { delayInMinutes: 288, periodInMinutes: 288 });
-	} else if (changeFrequency === 8) {
-		console.log('changeFrequency', changeFrequency);
-		chrome.alarms.create('backgroundCheck', { delayInMinutes: 180, periodInMinutes: 180 });
-	} else if (changeFrequency === 10) {
-		console.log('changeFrequency', changeFrequency);
-		chrome.alarms.create('backgroundCheck', { delayInMinutes: 144, periodInMinutes: 144	});
-	} else if (changeFrequency === 12) {
-		console.log('changeFrequency', changeFrequency);
-		chrome.alarms.create('backgroundCheck', { delayInMinutes: 120, periodInMinutes: 120 });
-	} else if (changeFrequency === 24) {
-		console.log('changeFrequency', changeFrequency);
-		chrome.alarms.create('backgroundCheck', { delayInMinutes: 60, periodInMinutes: 60 });
-	} else if (changeFrequency === 48) {
-		console.log('changeFrequency', changeFrequency);
-		chrome.alarms.create('backgroundCheck', { delayInMinutes: 30, periodInMinutes: 30 });
-	} else if (changeFrequency === 99) {
-        console.log('changeFrequency', changeFrequency);
-        chrome.alarms.create('backgroundCheck', { delayInMinutes: 0.5, periodInMinutes: 1 });
-	}
-
-
-	chrome.alarms.onAlarm.addListener(function() {
-        //console.log('Alarm triggered');
-        //getBackgroundAPI(1);
-	});
-}
+} // works in tandem with getBackgroundAPI()	// this function changes the background image 3 times per day depending on the current times
 // utilities
 function typedjs() {
 	$(".typed").typed({
@@ -456,8 +408,34 @@ function checkEmailLength() {
 		return;
 	}
 }
-function fillInformation() { // called after getting user
+
+function renderDashboard(emitter) { // called after getting user
 	$('.greeting').html(`Good day, ${user.name}.`);
+
+    // if emitter === 1 then function jis being called after user has signed up
+    if (emitter === 1) {
+        $('.googleSearch').fadeIn(2000);
+        return;
+    }
+	// searchbar
+	if (user.searchbar === true) {
+		$('.googleSearch').css('display', 'block');
+		$('input.searchbar').attr('checked', true);
+	} else if (user.searchbar === false) {
+		$('.googleSearch').css('display', 'none');
+		$('input.searchbar').attr('checked', false);
+	}
+
+    // background frequency
+    let frequencyNumber = user.background.backgroundChangeFrequency;
+
+    if (frequencyNumber.length === 1) {
+        frequencyNumber = ' ' + frequencyNumber;
+        console.log('frequencyNumber', frequencyNumber);
+    }
+    $('#frequencyNumber').html(frequencyNumber);
+
+
 }
 function injectYTVideo() {
 	var videos = ['https://www.youtube.com/embed/SuPLxQD4akQ?autoplay=1', 'https://www.youtube.com/embed/26U_seo0a1g?autoplay=1', 'https://www.youtube.com/embed/Yb-OYmHVchQ?autoplay=1', 'https://www.youtube.com/embed/K2bw52VjJLM?autoplay=1', 'https://www.youtube.com/embed/eRaTpTVTENU?autoplay=1', 'https://www.youtube.com/embed/2_fDhqRk_Ro?autoplay=1', 'https://www.youtube.com/embed/DvtxOzO6OAE?autoplay=1', 'https://www.youtube.com/embed/D_Vg4uyYwEk?autoplay=1',
@@ -536,7 +514,7 @@ $(document).ready(() => {
 		});
 	});
 
-	// ---------------------------- LOGIN LOGIC -----------------------------------
+// ------------------------- DOM LOGIN LOGIC ----------------------------------
 	// first time login message fade out and calling
 	$('.darkenBackground, #firstTimeClose').on('click', () => {
 		$('.darkenBackground, .welcomeMessage').fadeOut(500, () => {
@@ -683,12 +661,189 @@ $(document).ready(() => {
 
 			chrome.storage.sync.get(savedUser, function(foundUser) {
 				user = foundUser;
-				fillInformation();
+				renderDashboard(1);
 				$('section.loginForm').fadeOut(500, () => {
-					$('footer, .date, .logo, section.dashboard').fadeIn(2000);
+					$('footer, .googleSearch, .date, .logo, section.dashboard').fadeIn(2000);
 				});
 				return;
 			});
 		});
 	});
+
+// ------------------------- DOM OPTIONS LOGIC ----------------------------------
+	// searchbar
+	$('input.searchbar').on('click', function() {
+		let checked = $(this).prop('checked');
+
+		if (checked === true) {
+			$('section.googleSearch').fadeIn(500);
+
+			chrome.storage.sync.set({ "searchbar": true }, function() {
+				console.log('searchbar to true');
+			});
+		} else if (checked === false) {
+			$('section.googleSearch').fadeOut(500);
+
+			chrome.storage.sync.set({ "searchbar": false }, function() {
+				console.log('searchbar to false');
+			});
+		}
+	});
+
+	// background change frequency
+	$('#moreBackground').on('click', function() {
+		// 3 is default when user log ins for the first time
+		let frequency = $('#frequencyNumber').html();
+
+		switch(frequency) {
+            case '1':
+
+                user.background.backgroundChangeFrequency = 3;
+                chrome.storage.sync.set(user, function() {
+                    $('#frequencyNumber').html('3');
+                });
+                break;
+
+            case '3':
+
+                user.background.backgroundChangeFrequency = 5;
+                chrome.storage.sync.set(user, function() {
+                    $('#frequencyNumber').html('5');
+                });
+                break;
+
+            case '5':
+
+                user.background.backgroundChangeFrequency = 8;
+                chrome.storage.sync.set(user, function() {
+                    console.log('hello');
+                    $('#frequencyNumber').html('8');
+                });
+                break;
+
+            case '8':
+
+                user.background.backgroundChangeFrequency = 10;
+                chrome.storage.sync.set(user, function() {
+                    $('#frequencyNumber').html('10');
+                });
+                break;
+
+            case '10':
+
+                user.background.backgroundChangeFrequency = 12;
+                chrome.storage.sync.set(user, function() {
+                    $('#frequencyNumber').html('12');
+                });
+                break;
+
+            case '12':
+
+                user.background.backgroundChangeFrequency = 24;
+                chrome.storage.sync.set(user, function() {
+                    $('#frequencyNumber').html('24');
+                });
+                break;
+
+            case '24':
+
+                user.background.backgroundChangeFrequency = 48;
+                chrome.storage.sync.set(user, function() {
+                    $('#frequencyNumber').html('48');
+                });
+                break;
+
+            case '48':
+
+                user.background.backgroundChangeFrequency = 100;
+                chrome.storage.sync.set(user, function() {
+                    $('#frequencyNumber').html('100');
+                });
+                break;
+
+            case '100':
+
+                user.background.backgroundChangeFrequency = 100;
+                chrome.storage.sync.set(user, function() {
+                    $('#frequencyNumber').html('100');
+                });
+                break;
+            default:
+
+        }
+	});
+    $('#lessBackground').on('click', function() {
+        // 3 is default when user log ins for the first time
+        let frequency = $('#frequencyNumber').html();
+
+        switch(frequency) {
+            case '1':
+
+                user.background.backgroundChangeFrequency = 1;
+                chrome.storage.sync.set(user, function() {
+                    $('#frequencyNumber').html('1');
+                });
+                break;
+
+            case '3':
+
+                user.background.backgroundChangeFrequency = 1;
+                chrome.storage.sync.set(user, function() {
+                    $('#frequencyNumber').html('1');
+                });
+                break;
+
+            case '5':
+
+                user.background.backgroundChangeFrequency = 3;
+                chrome.storage.sync.set(user, function() {
+                    $('#frequencyNumber').html('3');
+                });
+                break;
+
+            case '8':
+
+                user.background.backgroundChangeFrequency = 5;
+                chrome.storage.sync.set(user, function() {
+                    $('#frequencyNumber').html('5');
+                });
+                break;
+
+            case '10':
+
+                user.background.backgroundChangeFrequency = 8;
+                chrome.storage.sync.set(user, function() {
+                    $('#frequencyNumber').html('8');
+                });
+                break;
+
+            case '12':
+
+                user.background.backgroundChangeFrequency = 10;
+                chrome.storage.sync.set(user, function() {
+                    $('#frequencyNumber').html('10');
+                });
+                break;
+
+            case '24':
+
+                user.background.backgroundChangeFrequency = 12;
+                chrome.storage.sync.set(user, function() {
+                    $('#frequencyNumber').html('12');
+                });
+                break;
+
+            case '48':
+
+                user.background.backgroundChangeFrequency = 24;
+                chrome.storage.sync.set(user, function() {
+                    $('#frequencyNumber').html('24');
+                });
+                break;
+
+            default:
+
+        }
+    });
+
 });

@@ -144,7 +144,6 @@ header {
 
 
   section.googleSearch {
-    display: none;
     min-width: 950px !important;
     width: 100vw;
 
@@ -717,16 +716,48 @@ footer {
     position: absolute;
     bottom: 50px;
     left: 50px;
-    background-color: rgba(255,255,255,0.85);
-    height: 69px;
-    width: 130px;
+    background-color: rgba(0,0,0,0.85);
+    width: 540px;
     border-radius: 5px;
     padding: 10px;
-    font-size: 16px;
+    font-size: 18px;
     box-sizing: border-box;
     font-weight: 100;
-    color: black;
+    color: white;
     text-align: left;
+
+    // general container
+    div.container {
+      padding: 2px 0;
+      font-size: 18px;
+      text-align: left;
+      margin: 2px 0px;
+      height: 25px;
+      transition: all .5s ease;
+    }
+
+    // backgroundFrequencyContainer
+    div.backgroundFrequencyContainer {
+      position: relative;
+      i {
+        cursor: pointer;
+        font-size: 20px;
+        transition: all .2s ease;
+        &:hover {
+          color: gold;
+        }
+      }
+
+      .arrows {
+        position: absolute;
+        right: 0;
+        margin: 0px 5px;
+      }
+
+      .arrowUp {
+        margin-right: 25px;
+      }
+    }
 
     label {
       cursor: pointer;
@@ -865,8 +896,8 @@ button[data-balloon] {
   -moz-opacity: 0;
   opacity: 0;
   pointer-events: none;
-  -webkit-transition: all 0.18s ease-out 0.18s;
-  transition: all 0.18s ease-out 0.18s;
+  -webkit-transition: all 0.18s ease-out 0.5s;
+  transition: all 0.18s ease-out 0.5s;
   bottom: 100%;
   left: 50%;
   position: absolute;

@@ -36,7 +36,6 @@
       </nav>
 
       <section class="googleSearch"  >
-        <!-- *ngIf="hasUserSubmitted === true && user.searchbar === true" -->
         <form class="myGoogleSearchForm" method="get" action="https://www.google.com/search">
           <i id="ion-ios-search-strong" class="ion-ios-search-strong"></i>
           <input id="placeholder" focusout="removePlaceholder()" type="text"  name="q">
@@ -156,11 +155,32 @@
         <p id="picAuthor"></p>
       </section>
 
+
       <div class="logoutpopup" (mouseleave)="logoutFadeOut()">
-        <label class="move" for="searchbar">Searchbar:&nbsp;</label>
-        <input class="move" (click)="noSearchbar()" id="searchbar" type="checkbox" checked name="searchbar" value=""> <br>
-        <label class="move logoutbutton" (click)=logout()>Log Out</label>
+
+        <div class="backgroundFrequencyContainer container">
+          <label for="backgroundFrequency"> How often should the background change in a day:</label>
+          <span class="spanContainer">
+            <span  id="frequencyNumber" class="number"></span> &nbsp;
+            <span  class="arrows arrowUp">
+              <i id="moreBackground" class="ion-arrow-up-c"></i>
+            </span> &nbsp;
+            <span class="arrows arrowDown">
+              <i id="lessBackground" class="ion-arrow-down-c"></i>
+            </span>
+          </span>
+        </div>
+
+        <div class="searchbarContainer container">
+          <label class="searchbar" for="searchbar">Searchbar:&nbsp;</label>
+          <input class="searchbar" id="searchbar" type="checkbox" checked name="searchbar">
+        </div>
+
+        <div class="LogoutContainer container">
+          <label class="move logoutbutton" (click)=logout()>Log Out</label>
+        </div>
       </div>
+
       <i id="logoutFadeIn" class="ion-gear-a" (click)="logoutFadeIn()"></i>
     </footer>
 <!-- CLOSE FOOTER ------------------------------------------------------------->
