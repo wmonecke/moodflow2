@@ -3,7 +3,10 @@ var user = {};
 var savedBackground = {};
 var _now = new Date();
 var today = _now.getDate();
+var myDataContainer = [];
 
+var testArray = [];
+testArray.push({ x: 5, y: 9}, { x: 6, y: 7});
 // start app handler
 bootstrapApp();
 function bootstrapApp() {
@@ -27,7 +30,7 @@ function bootstrapApp() {
 		// this function is in charge of displaying stuff in the dashboard
 		// for example it is in charge of displaying the users name, searchbar or quotes
 		renderDashboard();
-
+		//formatDataForChart();
 		return;
 	});
 
@@ -42,13 +45,10 @@ function bootstrapApp() {
 			return;
 		}
 
-		console.log('getting locally saved Picture');
 		// get locally saved user and display
 		base64ToImgAndDisplay();
-		formatDataForChart();
 		return;
 	});
-	// check if background is available
 }
 // ---------------------- DEFINING USER CONSTRUCTOR----------------------------
 function User(
@@ -107,111 +107,11 @@ User.prototype.hasMeditated = function() {
 };
 // var defined by user during form input
 let _name, _email, _gender, _timezone, _myLocation;
-// --------------------------- DEFINING CHART ---------------------------------
-var ctx = document.getElementById("myChart");
-var daysInCurrentMonth = new Date(_now.getFullYear(), _now.getMonth() + 1, 0).getDate();
-var myChart = new Chart(ctx, {
-	type: 'line',
-	data: {
-		datasets: [{
-			data: [{
-        	x: 1,
-        	y: 2
-    		}, {
-        	x: 7,
-        	y: 3
-    	}],
-			backgroundColor: 'rgba(247,218,13, 0.5)',
-			borderColor: 'gold',
-			pointBackgroundColor: 'rgba(255,255,255,1)',
-			pointBorderColor: '#fff',
-			pointHoverBackgroundColor: '#fff',
-			pointHoverBorderColor: 'black'
-		}]
-	},
-	options: {
-		maintainAspectRatio: false,
-		responsive: true,
-		animation: {
-			duration: 500,
-			easing: 'easeInOutQuart'
-		},
-		tooltips: {
-			bodyFontSize: 10,
-			titleFontSize: 10,
-			footerFontSize: 10,
-			callbacks: {
-				title: (tooltipItem, data) => {
-
-					let now = new Date();
-					let myArray = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-					let currentMonth = now.getMonth();
-
-					return myArray[currentMonth] + ', ' + tooltipItem[0].xLabel;
-
-				},
-				beforeLabel: (tooltipItems, data) => {
-					let comment;
-
-					if (user[today].moodComment !== undefined) {
-						comment = user[today].moodComment;
-					} else {
-						comment = '';
-					}
-
-					return ['', comment, ''];
-				},
-				label: (tooltipItems, data) => {
-					return data.datasets[tooltipItems.datasetIndex].label + ': ' + tooltipItems.yLabel + ' / 10';
-				}
-			}
-		},
-		legend: {
-			display: false,
-			labels: {
-				fontColor: 'white'
-			}
-		},
-		scales: {
-			xAxes: [{
-				gridLines: {
-					color: "rgba(255,255,255,0.0)",
-					zeroLineColor: "rgba(255,255,255,0.05)"
-				},
-				ticks: {
-					fontColor: "white",
-					beginAtZero: false,
-					min: 1,
-					max: daysInCurrentMonth,
-					fixedStepSize: 1
-				},
-				type: 'linear',
-				position: 'bottom'
-			}],
-			yAxes: [{
-				gridLines: {
-					color: "rgba(255,255,255,0.0)",
-					zeroLineColor: "rgba(255,255,255,0.5)"
-				},
-				ticks: {
-					fontColor: "rgba(200, 200, 200, 0.25)",
-					beginAtZero: true,
-					max: 10,
-					fixedStepSize: 1
-				},
-				type: 'linear',
-			}],
-		}
-
-	}
-});
 // ------------------------------ FUNCTIONS -----------------------------------
 // handle backgroundImage
 function base64ToImgAndDisplay() { // gets compressed base64 and backgroundImageInfo
 	var savedBackground;
 	chrome.storage.local.get(savedBackground, function(foundBackground) {
-		console.log('Found img');
-		console.log(foundBackground);
 
 		$('#background').on('load', function() {
 			$('body, .background').fadeIn(800);
@@ -220,8 +120,6 @@ function base64ToImgAndDisplay() { // gets compressed base64 and backgroundImage
 
 	let backgroundInfo;
 	chrome.storage.local.get(backgroundInfo, function(foundBackgroundInfo) {
-		console.log('foundBackgroundInfo');
-		console.log(foundBackgroundInfo);
 
 		if (foundBackgroundInfo.location === undefined) {
 			$('#picLocation').html('Planet Earth');
@@ -231,7 +129,6 @@ function base64ToImgAndDisplay() { // gets compressed base64 and backgroundImage
 			$('#picAuthor').html(`Photo: <a class="myAnchor" style="color: rgba(255, 255, 255, 0.8);" href="${foundBackgroundInfo.user.links.html}?utm_source=moodflow&utm_medium=referral&utm_campaign=api-credit">${foundBackgroundInfo.user.name}</a> / <a style="color: rgba(255, 255, 255, 0.8);" class="myAnchor" href="https://unsplash.com/">Unsplash</a>`);
 		}
 	});
-
 }
 function getBackgroundAPI(frequencyEmitter) { // AJAX Unsplash API --> compressImageAndSave()
 	// background image AJAX
@@ -413,15 +310,128 @@ function checkEmailLength() {
 	}
 }
 function formatDataForChart() {
-	console.log('formatDataForChart');
 
+	// this for loop figures out how many moods have been submitted for the current month
 	for (var key in user) {
-		// if (typeof key === 'number') {
-		 	if (user.hasOwnProperty(key)) {
-				console.log(key + " -> " + user[key]);
+
+	 	if (user.hasOwnProperty(key)) {
+			// convert string to number (fastest way for chrome)
+			key = key*1;
+			// filter out keys that are NOT numbers
+			if (isNaN(key) === false) {
+				// filter out keys that do not have a moodValue: not much sense displaying something that as no value to the user
+				if (user[key].moodValue !== '') {
+					//myArrayForCounting.push(user[key].moodValue);
+					moodValue = user[key].moodValue*1;
+
+                    let newObj  = { x: key, y: moodValue };
+
+					myDataContainer.push(newObj);
+				}
 			}
-		// }
+		}
 	}
+
+    console.log('myDataContainer', myDataContainer);
+	updateChart(myDataContainer);
+}
+function updateChart(array) {
+	// --------------------------- DEFINING CHART ---------------------------------
+	let ctx = document.getElementById("myChart");
+	let daysInCurrentMonth = new Date(_now.getFullYear(), _now.getMonth() + 1, 0).getDate();
+
+	let myChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			datasets: [{
+				data: array,
+				backgroundColor: 'rgba(247,218,13, 0.5)',
+				borderColor: 'gold',
+				pointBackgroundColor: 'rgba(255,255,255,1)',
+				pointBorderColor: '#fff',
+				pointHoverBackgroundColor: '#fff',
+				pointHoverBorderColor: 'black'
+			}]
+		},
+		options: {
+			maintainAspectRatio: false,
+			responsive: true,
+			animation: {
+				duration: 500,
+				easing: 'easeInOutQuart'
+			},
+			tooltips: {
+				bodyFontSize: 10,
+				titleFontSize: 10,
+				footerFontSize: 10,
+				callbacks: {
+					title: (tooltipItem, data) => {
+
+						let now = new Date();
+						let myArray = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+						let currentMonth = now.getMonth();
+
+						return myArray[currentMonth] + ', ' + tooltipItem[0].xLabel;
+
+					},
+					beforeLabel: (tooltipItems, data) => {
+
+
+                        let comment;
+
+                        if (user[tooltipItems.index.toString()].moodComment !== undefined) {
+                            comment = user[tooltipItems.index.toString()].moodComment;
+                        } else {
+                            comment = '';
+                        }
+
+                        return ['', comment, ''];
+
+					},
+					label: (tooltipItems, data) => {
+						return data.datasets[tooltipItems.datasetIndex].label + ': ' + tooltipItems.yLabel + ' / 10';
+					}
+				}
+			},
+			legend: {
+				display: false,
+				labels: {
+					fontColor: 'white'
+				}
+			},
+			scales: {
+				xAxes: [{
+					gridLines: {
+						color: "rgba(255,255,255,0.0)",
+						zeroLineColor: "rgba(255,255,255,0.05)"
+					},
+					ticks: {
+						fontColor: "white",
+						beginAtZero: false,
+						min: 1,
+						max: daysInCurrentMonth,
+						fixedStepSize: 1
+					},
+					type: 'linear',
+					position: 'bottom'
+				}],
+				yAxes: [{
+					gridLines: {
+						color: "rgba(255,255,255,0.0)",
+						zeroLineColor: "rgba(255,255,255,0.5)"
+					},
+					ticks: {
+						fontColor: "rgba(200, 200, 200, 0.25)",
+						beginAtZero: true,
+						max: 10,
+						fixedStepSize: 1
+					},
+					type: 'linear',
+				}],
+			}
+
+		}
+	});
 }
 // called after getting user
 function renderDashboard(emitter) {
@@ -539,10 +549,13 @@ $(document).ready(() => {
 
 	// ***REFLECT LOGIC***
 	$('#reflectButton').on('click', () => {
+        formatDataForChart();
 		$('.dashboard').fadeOut(500, () => {
 			$('.chart').fadeIn(500);
 		});
 	});
+
+	// ***MEDITATE LOGIC***
 
 	// ***FOOTER*** logout popup fadeIn and fadeOut
 	$('#logoutFadeIn').on('click', () => {
@@ -902,13 +915,18 @@ $(document).ready(() => {
 
     $('.statsFadeIn').on('click', function() {
         chrome.storage.sync.set(user, function() {
-            $('section.moodInput').fadeOut(500, () => {
-                $('section.chart').fadeIn(500);
+            chrome.storage.sync.get(user, function(foundUser) {
+                user = foundUser;
+                console.log('new user', user);
+                formatDataForChart();
+                $('section.moodInput').fadeOut(500, () => {
+                    $('section.chart').fadeIn(500);
+                });
             });
         });
     });
 
-		$('.iconContainer').on('click', function() {
+	$('.iconContainer').on('click', function() {
 			$('section.chart').fadeOut(500, () => {
 				$('section.dashboard').fadeIn(500);
 			});
