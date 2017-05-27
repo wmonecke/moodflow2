@@ -123,7 +123,26 @@
 
       <section class="moodInput">
         <div class="container">
-          
+
+          <h4 class="moodInputGreeting">Good day, user</h4>
+
+          <div class="moodValueContainer">
+            <h5 class="highlight">How is your day going?</h5>
+
+            <input name="inputvalue" id="moodValue" type="range" min="0" max="10" step="1" value="5">
+            <div class="showInputValue">5</div>
+
+            <button  class="continueButton" type="button" name="">&#x21E8; Continue</button>
+          </div>
+
+          <div class="commentValueContainer">
+            <h5 class="highlight">Do you mind telling why?</h5>
+            <textarea class="commentInput" name="name" rows="1" placeholder="  :)" cols="80"></textarea>
+
+            <button class="skipButton statsFadeIn" type="submit" name="buttonSkip"> &#x2192; Skip</button>
+            <button class="submitButton statsFadeIn" type="submit" name="buttonFilled">moodflow</button>
+          </div>
+
         </div>
       </section>
 

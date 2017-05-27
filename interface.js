@@ -1,6 +1,9 @@
 // ------------------------ BOOTRSTRAP APP ---------------------------------
 var user = {};
 var savedBackground = {};
+var _now = new Date();
+var today = _now.getDate();
+
 // start app handler
 bootstrapApp();
 function bootstrapApp() {
@@ -15,11 +18,14 @@ function bootstrapApp() {
 			return;
 		}
 
+        console.log('foundUser', foundUser);
         // HIDING DASHBOARD TO DEVELOP MOOD INPUT FLOW
         $('section.dashboard').css('display', 'none');
 
 
 		user = foundUser;
+
+        console.log('moodComment of today', user[today].moodComment);
 		// this function is in charge of displaying stuff in the dashboard
 		// for example it is in charge of displaying the users name, searchbar or quotes
 		renderDashboard();
@@ -103,7 +109,6 @@ User.prototype.hasMeditated = function() {
 let _name, _email, _gender, _timezone, _myLocation;
 // --------------------------- DEFINING CHART ---------------------------------
 var ctx = document.getElementById("myChart");
-let _now = new Date();
 var daysInCurrentMonth = new Date(_now.getFullYear(), _now.getMonth() + 1, 0).getDate();
 var myChart = new Chart(ctx, {
 	type: 'line',
@@ -422,17 +427,17 @@ function renderDashboard(emitter) {
 	// background frequency
 	let frequencyNumber = user.background.backgroundChangeFrequency;
 
-  // if emitter === 1 then function jis being called after user has signed up
-  if (emitter === 1) {
-			chrome.alarms.create('downloadNewBackground', {
-				delayInMinutes: 480,
-				periodInMinutes: 480
-			});
+    // if emitter === 1 then function jis being called after user has signed up
+    if (emitter === 1) {
+		chrome.alarms.create('downloadNewBackground', {
+			delayInMinutes: 480,
+			periodInMinutes: 480
+		});
 
-      $('.googleSearch').fadeIn(2000);
+        $('.googleSearch').fadeIn(2000);
 			$('#frequencyNumber').html('every 8 hours');
-      return;
-  }
+        return;
+    }
 
 	// searchbar
 	if (user.searchbar === true) {
@@ -443,7 +448,7 @@ function renderDashboard(emitter) {
 		$('input.searchbar').attr('checked', false);
 	}
 
-
+    // frequency in options menu
 	switch(frequencyNumber) {
 			case 1:
 				$('#frequencyNumber').html('once a day');
@@ -472,6 +477,9 @@ function renderDashboard(emitter) {
 			default:
 
 	}
+
+    // users name in moodflow input
+    $('.moodInputGreeting').html(`Good day, ${user.name}.`);
 }
 function injectYTVideo() {
 	var videos = ['https://www.youtube.com/embed/SuPLxQD4akQ?autoplay=1', 'https://www.youtube.com/embed/26U_seo0a1g?autoplay=1', 'https://www.youtube.com/embed/Yb-OYmHVchQ?autoplay=1', 'https://www.youtube.com/embed/K2bw52VjJLM?autoplay=1', 'https://www.youtube.com/embed/eRaTpTVTENU?autoplay=1', 'https://www.youtube.com/embed/2_fDhqRk_Ro?autoplay=1', 'https://www.youtube.com/embed/DvtxOzO6OAE?autoplay=1', 'https://www.youtube.com/embed/D_Vg4uyYwEk?autoplay=1',
@@ -682,25 +690,235 @@ $(document).ready(() => {
 	// event after user choses gender or does not provide information
 	$('.afterGender').on('click', () => {
 		var savedUser = new User(_name, _email, _gender);
+        var moodContainer = {
+            1: {
+                moodComment: "",
+                moodValue: ""
+            },
+            2: {
+                moodComment: "",
+                moodValue: ""
+            },
+            3: {
+                moodComment: "",
+                moodValue: ""
+            },
+            4: {
+                moodComment: "",
+                moodValue: ""
+            },
+            5: {
+                moodComment: "",
+                moodValue: ""
+            },
+            6: {
+                moodComment: "",
+                moodValue: ""
+            },
+            7: {
+                moodComment: "",
+                moodValue: ""
+            },
+            8: {
+                moodComment: "",
+                moodValue: ""
+            },
+            9: {
+                moodComment: "",
+                moodValue: ""
+            },
+            10: {
+                moodComment: "",
+                moodValue: ""
+            },
+            11: {
+                moodComment: "",
+                moodValue: ""
+            },
+            12: {
+                moodComment: "",
+                moodValue: ""
+            },
+            13: {
+                moodComment: "",
+                moodValue: ""
+            },
+            14: {
+                moodComment: "",
+                moodValue: ""
+            },
+            15: {
+                moodComment: "",
+                moodValue: ""
+            },
+            16: {
+                moodComment: "",
+                moodValue: ""
+            },
+            17: {
+                moodComment: "",
+                moodValue: ""
+            },
+            18: {
+                moodComment: "",
+                moodValue: ""
+            },
+            19: {
+                moodComment: "",
+                moodValue: ""
+            },
+            20: {
+                moodComment: "",
+                moodValue: ""
+            },
+            21: {
+                moodComment: "",
+                moodValue: ""
+            },
+            22: {
+                moodComment: "",
+                moodValue: ""
+            },
+            23: {
+                moodComment: "",
+                moodValue: ""
+            },
+            24: {
+                moodComment: "",
+                moodValue: ""
+            },
+            25: {
+                moodComment: "",
+                moodValue: ""
+            },
+            26: {
+                moodComment: "",
+                moodValue: ""
+            },
+            27: {
+                moodComment: "",
+                moodValue: ""
+            },
+            28: {
+                moodComment: "",
+                moodValue: ""
+            },
+            29: {
+                moodComment: "",
+                moodValue: ""
+            },
+            30: {
+                moodComment: "",
+                moodValue: ""
+            },
+            31: {
+                moodComment: "",
+                moodValue: ""
+            },
+        };
+
 
 		chrome.storage.sync.set(savedUser, function() {
 			console.log('user was saved');
 
-			chrome.storage.sync.get(savedUser, function(foundUser) {
-				console.log(foundUser);
-				user = foundUser;
-				renderDashboard(1);
+            chrome.storage.sync.set(moodContainer, function() {
+                console.log('moodContainer was saved');
 
-				// fadeOut login section and fadeIn dashboard
-				$('section.loginForm').fadeOut(500, () => {
-					$('footer, .googleSearch, .date, .logo, section.dashboard').fadeIn(2000);
-				});
-				return;
-			});
+                chrome.storage.sync.get(savedUser, function(foundUser) {
+                    console.log(foundUser);
+                    user = foundUser;
+                    renderDashboard(1);
+
+                    // fadeOut login section and fadeIn dashboard
+                    $('section.loginForm').fadeOut(500, () => {
+                        $('footer, .googleSearch, .date, .logo, section.dashboard').fadeIn(2000);
+                    });
+                    return;
+                });
+            });
 		});
 	});
 
-// ------------------------- DOM OPTIONS LOGIC ----------------------------------
+// ------------------------ DOM MOODINPUT LOGIC -------------------------------
+    // realtime moodValue updating and continueButton fadein
+    let currentDay;
+    let mood;
+    let comment;
+
+    $('#moodValue').mousemove(function() {
+        $('.showInputValue').text($('#moodValue').val());
+        setTimeout(() => {
+            $('.continueButton').fadeIn(400);
+        }, 200);
+    });
+
+    $('.continueButton').on('click', function() {
+        currentDay = _now.getDate();
+        mood = $('#moodValue').val();
+
+        console.log(daysInCurrentMonth);
+        console.log(currentDay);
+
+        // here we use bracket notation so that we access the key dynamically
+        user[currentDay].moodValue = mood;
+
+        console.log(user[currentDay].moodValue);
+
+
+        $('div.moodValueContainer').fadeOut(500, () => {
+            $('div.commentValueContainer').fadeIn(500);
+        });
+    });
+
+    $('.commentInput').focus(function() {
+        $(this).css('width', '350px');
+        $('.skipButton').css('left', '140px');
+        setTimeout(() => {
+            $('.submitButton').fadeIn(500);
+        }, 300);
+    });
+    $('.commentInput').on('keyup', () => {
+        let text = $('.commentInput').val();
+
+        if (text.length >= 28) {
+            console.log('expanding once');
+            $('.commentInput').css('height', '68px');
+        }
+
+        if (text.length >= 70) {
+            console.log('expanding twice');
+            $('.commentInput').css('height', '102px');
+        }
+
+        if (text.length >= 100) {
+            console.log('expanding three times');
+            $('.commentInput').css('height', '140px');
+            return;
+        }
+    });
+
+    $('.submitButton').on('click', function() {
+        comment = $('.commentInput').val();
+        console.log('comment', comment);
+
+        user[currentDay].moodComment = comment;
+        console.log('user', user);
+    });
+    $('.skipButton').on('click', function() {
+        user[currentDay].moodComment = '';
+    });
+
+    $('.statsFadeIn').on('click', function() {
+        chrome.storage.sync.set(user, function() {
+            $('section.moodInput').fadeOut(500, () => {
+                $('section.chart').fadeIn(500);
+            });
+        });
+    });
+
+
+
+// ------------------------- DOM OPTIONS LOGIC --------------------------------
 	// searchbar
 	$('input.searchbar').on('click', function() {
 		let checked = $(this).prop('checked');

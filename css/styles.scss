@@ -600,14 +600,179 @@ main {
     text-shadow: 1px 1px 1px rgba(100, 100, 100, 0.6);
 
     div.container {
+      position: relative;
       border: 1px solid red;
       min-width: 1000px;
-      position: relative;
-      top: 40px;
       box-sizing: border-box;
       margin: auto;
-      height: 200px;
+      height: 300px;
       width: 500px;
+
+      div.moodValueContainer {  }
+
+      div.commentValueContainer {
+        display: none;
+      }
+
+      h4 {
+        position: relative;
+        width: 1000px;
+        margin: auto;
+
+        box-sizing: border-box;
+        text-align: center;
+        font-weight: bold;
+        font-size: 64px;
+        letter-spacing: -1px;
+      }
+
+      h5 {
+        position: relative;
+        text-align: center;
+        color: gold;
+        font-weight: 100;
+        letter-spacing: -2px;
+        font-size: 44px;
+      }
+
+      input[type="range"] {
+        position: relative;
+        top: 20px;
+        -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+        width: 280px; /* Specific width is required for Firefox. */
+        background: transparent; /* Otherwise white in Chrome */
+        outline: none;
+        &:focus {
+          outline: none;
+        }
+        &::-ms-track {
+          width: 100%;
+          cursor: pointer;
+          background: transparent;
+          border-color: transparent;
+          color: transparent;
+        }
+        &::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          border: 1px solid rgba(190, 190, 190, 0.4);
+          height: 30px;
+          width: 16px;
+          border-radius: 3px;
+          background: gold;
+          cursor: pointer;
+          margin-top: -14px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+        }
+        &::-moz-range-thumb {
+          border: 1px solid rgba(190, 190, 190, 0.4);
+          height: 36px;
+          width: 16px;
+          border-radius: 3px;
+          background: gold;
+          cursor: pointer;
+        }
+        &::-ms-thumb {
+          border: 1px solid gold; //rgba(190, 190, 190, 0.4);
+          height: 36px;
+          width: 16px;
+          border-radius: 3px;
+          background: gold;
+          cursor: pointer;
+        }
+        &::-webkit-slider-runnable-track {
+          width: 100%;
+          height: 8.4px;
+          cursor: pointer;
+          background: rgba(255, 255, 255, 1);
+          border-radius: 1.3px;
+          border: 0.2px solid rgba(255, 255, 255, 1);
+        }
+      }
+
+      .showInputValue {
+        //display: none;
+
+        width: 40px;
+        height: 40px;
+
+        margin: 40px auto 10px;
+        font-size: 32px;
+        background-color: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+      }
+
+      .continueButton {
+        margin-top: 17px;
+        display: none;
+
+        cursor: pointer;
+        outline: none;
+        padding: 10px 14px;
+        border: solid 1px transparent;
+        font-size: 20px;
+        background-color: gold;
+        color: rgb(60,60,60);
+        border-radius: 5px;
+        transition: background-color 0.5s ease, color .5s ease;
+        &:hover {
+          background-color: white;
+          color: rgb(100,100,100);
+        }
+      }
+
+      .commentInput {
+        resize: vertical;
+        position: relative;
+        top: 20px;
+        width: 280px;
+        height: 34px;
+
+        font-size: 20px;
+        text-align: justify;
+        outline: none;
+        border: 1px solid transparent;
+        border-radius: 5px;
+        padding-top: 9px;
+        transition: all .8s ease;
+      }
+
+      .skipButton {
+        position: relative;
+        display: block;
+        left: 120px;
+        bottom: -21px;
+        //display: none;
+        margin: auto;
+        outline:none;
+        font-weight: 400;
+        cursor: pointer;
+        background-color: transparent;
+        border: 1px solid transparent;
+        color: rgba(255,255,255,0.8);
+        font-size: 15px;
+        transition: all .5s ease;
+        &:hover {
+          color: white;
+        }
+      }
+
+      .submitButton {
+        margin-top: 17px;
+        display: none;
+
+        cursor: pointer;
+        outline: none;
+        padding: 10px 14px;
+        border: solid 1px transparent;
+        font-size: 20px;
+        background-color: gold;
+        color: rgb(60,60,60);
+        border-radius: 5px;
+        transition: background-color 0.5s ease, color .5s ease;
+        &:hover {
+          background-color: white;
+          color: rgb(70,70,70);
+        }
+      }
     }
   }
 
