@@ -18,17 +18,16 @@ function bootstrapApp() {
 			return;
 		}
 
-        console.log('foundUser', foundUser);
         // HIDING DASHBOARD TO DEVELOP MOOD INPUT FLOW
         $('section.dashboard').css('display', 'none');
 
 
 		user = foundUser;
 
-        console.log('moodComment of today', user[today].moodComment);
 		// this function is in charge of displaying stuff in the dashboard
 		// for example it is in charge of displaying the users name, searchbar or quotes
 		renderDashboard();
+
 		return;
 	});
 
@@ -46,6 +45,7 @@ function bootstrapApp() {
 		console.log('getting locally saved Picture');
 		// get locally saved user and display
 		base64ToImgAndDisplay();
+		formatDataForChart();
 		return;
 	});
 	// check if background is available
@@ -113,34 +113,27 @@ var daysInCurrentMonth = new Date(_now.getFullYear(), _now.getMonth() + 1, 0).ge
 var myChart = new Chart(ctx, {
 	type: 'line',
 	data: {
-		labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
 		datasets: [{
-			label: '# of Votes',
-			data: [12, 19, 3, 5, 2, 3],
-			backgroundColor: [
-				'rgba(255, 99, 132, 0.2)',
-				'rgba(54, 162, 235, 0.2)',
-				'rgba(255, 206, 86, 0.2)',
-				'rgba(75, 192, 192, 0.2)',
-				'rgba(153, 102, 255, 0.2)',
-				'rgba(255, 159, 64, 0.2)'
-			],
-			borderColor: [
-				'rgba(255,99,132,1)',
-				'rgba(54, 162, 235, 1)',
-				'rgba(255, 206, 86, 1)',
-				'rgba(75, 192, 192, 1)',
-				'rgba(153, 102, 255, 1)',
-				'rgba(255, 159, 64, 1)'
-			],
-			borderWidth: 1
+			data: [{
+        	x: 1,
+        	y: 2
+    		}, {
+        	x: 7,
+        	y: 3
+    	}],
+			backgroundColor: 'rgba(247,218,13, 0.5)',
+			borderColor: 'gold',
+			pointBackgroundColor: 'rgba(255,255,255,1)',
+			pointBorderColor: '#fff',
+			pointHoverBackgroundColor: '#fff',
+			pointHoverBorderColor: 'black'
 		}]
 	},
 	options: {
 		maintainAspectRatio: false,
 		responsive: true,
 		animation: {
-			duration: 400,
+			duration: 500,
 			easing: 'easeInOutQuart'
 		},
 		tooltips: {
@@ -150,7 +143,6 @@ var myChart = new Chart(ctx, {
 			callbacks: {
 				title: (tooltipItem, data) => {
 
-					console.log(tooltipItem[0].xLabel);
 					let now = new Date();
 					let myArray = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 					let currentMonth = now.getMonth();
@@ -161,8 +153,8 @@ var myChart = new Chart(ctx, {
 				beforeLabel: (tooltipItems, data) => {
 					let comment;
 
-					if (this.moodInfoHolder[tooltipItems.index]) {
-						comment = this.moodInfoHolder[tooltipItems.index].moodComment;
+					if (user[today].moodComment !== undefined) {
+						comment = user[today].moodComment;
 					} else {
 						comment = '';
 					}
@@ -420,6 +412,17 @@ function checkEmailLength() {
 		return;
 	}
 }
+function formatDataForChart() {
+	console.log('formatDataForChart');
+
+	for (var key in user) {
+		// if (typeof key === 'number') {
+		 	if (user.hasOwnProperty(key)) {
+				console.log(key + " -> " + user[key]);
+			}
+		// }
+	}
+}
 // called after getting user
 function renderDashboard(emitter) {
 	$('.greeting').html(`Good day, ${user.name}.`);
@@ -521,7 +524,7 @@ $(document).ready(() => {
 	let monthDaynum = moment().format('MMMM Do'); // May 15th
 	$('.date').html(`${day}, ${monthDaynum}`);
 
-	// ***MAIN***
+	// ***MAIN BUTTONS***
 
 	// ***MOTIVATE LOGIC***
 	$('#motivateButton').on('click', () => {
@@ -580,10 +583,10 @@ $(document).ready(() => {
 			//used only to greet the user when asking for the email
 			nameGreeting = _name.toLowerCase();
 			$('.askEmail').html(`oh hey, ${nameGreeting}. <br> what is your <span class="highlight">email</span>?`);
-			console.log(nameGreeting);
+
 			// making sure the first letter is uppercase
 			_name = _name.charAt(0).toUpperCase() + _name.slice(1);
-			console.log(name);
+
 			$('.usernameInput').css({
 				'color': 'transparent',
 				'border-bottom-color': 'white'
@@ -856,14 +859,8 @@ $(document).ready(() => {
         currentDay = _now.getDate();
         mood = $('#moodValue').val();
 
-        console.log(daysInCurrentMonth);
-        console.log(currentDay);
-
         // here we use bracket notation so that we access the key dynamically
         user[currentDay].moodValue = mood;
-
-        console.log(user[currentDay].moodValue);
-
 
         $('div.moodValueContainer').fadeOut(500, () => {
             $('div.commentValueContainer').fadeIn(500);
@@ -881,17 +878,14 @@ $(document).ready(() => {
         let text = $('.commentInput').val();
 
         if (text.length >= 28) {
-            console.log('expanding once');
             $('.commentInput').css('height', '68px');
         }
 
         if (text.length >= 70) {
-            console.log('expanding twice');
             $('.commentInput').css('height', '102px');
         }
 
         if (text.length >= 100) {
-            console.log('expanding three times');
             $('.commentInput').css('height', '140px');
             return;
         }
@@ -899,10 +893,8 @@ $(document).ready(() => {
 
     $('.submitButton').on('click', function() {
         comment = $('.commentInput').val();
-        console.log('comment', comment);
 
         user[currentDay].moodComment = comment;
-        console.log('user', user);
     });
     $('.skipButton').on('click', function() {
         user[currentDay].moodComment = '';
@@ -916,6 +908,11 @@ $(document).ready(() => {
         });
     });
 
+		$('.iconContainer').on('click', function() {
+			$('section.chart').fadeOut(500, () => {
+				$('section.dashboard').fadeIn(500);
+			});
+		});
 
 
 // ------------------------- DOM OPTIONS LOGIC --------------------------------

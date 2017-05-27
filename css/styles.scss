@@ -821,6 +821,18 @@ main {
         box-sizing: border-box;
         overflow: visible;
       }
+
+      .iconContainer{
+        position: relative;
+        top: 80px;
+        i.ion-ios-checkmark-outline {
+          cursor: pointer;
+          position: relative !important;
+          font-size: 44px;
+          color: gold;
+          overflow: visible;
+        }
+      }
     }
   }
 
