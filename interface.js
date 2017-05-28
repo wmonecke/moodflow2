@@ -389,8 +389,10 @@ function updateChart(array) {
 
 			},
 			beforeLabel: (tooltipItems, data) => {
-                // fadeIn Container
+                // make title and header invisble
                 $('.yourMoodflow').addClass('makeSpanTransparent');
+                $('div.headerContainer').fadeOut(500);
+                // fadeIn Container
                 $('div.tooltipContainer').fadeIn(1000);
 
                 let displayComment = $('#displayTooltipComment');
@@ -973,8 +975,9 @@ $(document).ready(() => {
 
     $('.iconContainer').on('click', function() {
         $('section.chart').fadeOut(500, () => {
+
             $('.yourMoodflow').removeClass('makeSpanTransparent');
-            $('section.dashboard').fadeIn(500);
+            $('div.headerContainer, section.dashboard').fadeIn(500);
         });
     });
 
