@@ -589,6 +589,7 @@ main {
   }
 
   section.moodInput {
+    display: none;
     padding: 80px 0;
     position: fixed;
     margin: auto;
@@ -793,6 +794,11 @@ main {
       height: 400px;
       width: 1155px;
 
+      .makeSpanTransparent {
+        color: transparent;
+        text-shadow: 1px 1px 1px rgba(100, 100, 100, 0.0);
+      }
+
       h4 {
         width: 900px;
         height: 100px;
@@ -804,6 +810,81 @@ main {
         font-weight: bold;
         font-size: 64px;
         letter-spacing: -1px;
+
+        .yourMoodflow {
+          transition: all .5s ease;
+        }
+      }
+
+      div.tooltipContainer {
+        display: none;
+        position: absolute;
+        top: -80px;
+        right: 0;
+        left: 0;
+        margin: auto;
+        height: 150px;
+        width: 500px;
+        padding: 15px;
+        background-color: rgba(0,0,0,0.1);
+        border-radius: 3px;
+        box-sizing: border-box;
+
+        -webkit-box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.5);
+        -moz-box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.5);
+        box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.5);
+
+        .blurText {
+          transition: all 1s ease;
+          color: transparent;
+          text-shadow: 0 0 5px rgba(255,255,255,0.99);
+        }
+
+        .myTitle {
+          border: 1px solid red;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          box-sizing: border-box;
+          font-size: 18px;
+          height: 20px;
+          font-weight: bolder;
+
+          transition: all .25s ease;
+        }
+
+        .myComment {
+          border: 1px solid blue;
+          font-size: 16px;
+          text-align: justify;
+          height: 80px;
+          width: 470px;
+          box-sizing: border-box;
+          line-height: 23px;
+          padding-top: 7px;
+
+          overflow-x: scroll;
+
+          transition: all .25s ease;
+        }
+
+        .myValue {
+          border: 1px solid red;
+          font-size: 18px;
+          padding: 1px;
+          text-align: center;
+          height: 20px;
+          box-sizing: border-box;
+
+          transition: all .25s ease;
+        }
+        .moodHighlight {
+          display: inline;
+          color: gold;
+
+          font-weight: bolder;
+          transition: all .25s ease;
+        }
       }
 
       div.canvasContainer {

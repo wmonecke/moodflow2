@@ -148,9 +148,16 @@
 
       <section class="chart">
         <div class="container">
-          <h4>
+          <h4 class="chartGreeting">
             <span class="yourMoodflow">Your moodflow:</span>
           </h4>
+
+          <div class="tooltipContainer">
+            <div id="displayTooltipTitle" class="myTitle"></div>
+            <div id="displayTooltipComment" class="myComment"></div>
+            <div id="displayTooltipMoodvalue" class="myValue">
+              My mood: <span class="moodHighlight"></span> / 10 </div>
+          </div>
 
           <div class="canvasContainer">
             <canvas id="myChart" style="font-size: 30px;"></canvas>
@@ -205,8 +212,8 @@
           <input class="searchbar" id="searchbar" type="checkbox" checked name="searchbar">
         </div>
 
-        <div class="LogoutContainer container">
-          <label class="move logoutbutton" (click)=logout()>Log Out</label>
+        <div class="logoutContainer container">
+          <label class="move logoutbutton">Log Out</label>
         </div>
       </div>
 

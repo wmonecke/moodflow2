@@ -21,11 +21,18 @@ function bootstrapApp() {
 			return;
 		}
 
-        // HIDING DASHBOARD TO DEVELOP MOOD INPUT FLOW
-        $('section.dashboard').css('display', 'none');
-
-
 		user = foundUser;
+
+        let todayAsAString = today.toString();
+
+        console.log(user[todayAsAString]);
+        console.log(user[todayAsAString].moodValue);
+
+        if (user[todayAsAString].moodValue === '' || undefined) {
+            $('section.dashboard').css('display', 'none');
+            $('section.moodInput').css('display', 'block');
+        }
+
 
 		// this function is in charge of displaying stuff in the dashboard
 		// for example it is in charge of displaying the users name, searchbar or quotes
@@ -336,6 +343,7 @@ function formatDataForChart() {
 	updateChart(myDataContainer);
 }
 function updateChart(array) {
+    var currentIndex;
 	// --------------------------- DEFINING CHART ---------------------------------
 	let ctx = document.getElementById("myChart");
 	let daysInCurrentMonth = new Date(_now.getFullYear(), _now.getMonth() + 1, 0).getDate();
@@ -347,9 +355,11 @@ function updateChart(array) {
 				data: array,
 				backgroundColor: 'rgba(247,218,13, 0.5)',
 				borderColor: 'gold',
+        pointRadius: 6,
+        pointHoverRadius: 10,
 				pointBackgroundColor: 'rgba(255,255,255,1)',
 				pointBorderColor: '#fff',
-				pointHoverBackgroundColor: '#fff',
+				pointHoverBackgroundColor: 'rgba(0,0,0,1)',
 				pointHoverBorderColor: 'black'
 			}]
 		},
@@ -357,41 +367,67 @@ function updateChart(array) {
 			maintainAspectRatio: false,
 			responsive: true,
 			animation: {
-				duration: 500,
-				easing: 'easeInOutQuart'
+				duration: 400,
+				easing: 'easeOutQuart'
 			},
 			tooltips: {
-				bodyFontSize: 10,
-				titleFontSize: 10,
-				footerFontSize: 10,
-				callbacks: {
-					title: (tooltipItem, data) => {
+        enabled: true,
+        backgroundColor: 'rgba(0,0,0,0)',
+		bodyFontSize: 14,
+		titleFontSize: 14,
+		footerFontSize: 12,
+	    callbacks: {
+			title: (tooltipItem, data) => {
 
-						let now = new Date();
-						let myArray = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-						let currentMonth = now.getMonth();
+				let now = new Date();
+				let myArray = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+				let currentMonth = now.getMonth();
+                setTimeout(() => {
+                    $('#displayTooltipTitle').html(myArray[currentMonth] + ', ' + tooltipItem[0].xLabel);
+                }, 250);
+				//return myArray[currentMonth] + ', ' + tooltipItem[0].xLabel;
 
-						return myArray[currentMonth] + ', ' + tooltipItem[0].xLabel;
+			},
+			beforeLabel: (tooltipItems, data) => {
+                // fadeIn Container
+                $('.yourMoodflow').addClass('makeSpanTransparent');
+                $('div.tooltipContainer').fadeIn(1000);
 
-					},
-					beforeLabel: (tooltipItems, data) => {
+                let displayComment = $('#displayTooltipComment');
+                let newIndex = tooltipItems.xLabel;
+
+                // check if the current point that is hovered on is the same one or a different one
+                if (newIndex !== currentIndex) {
+                    console.log('changed node');
+
+                    $('#displayTooltipTitle, #displayTooltipComment, .moodHighlight, #displayTooltipMoodvalue').css({'color': 'transparent', 'text-shadow': '0 0 5px rgba(255,255,255,0.1)'});
+
+                    let comment = user[tooltipItems.xLabel.toString()].moodComment;
+
+                    comment = comment.substr(0, 1).toUpperCase() + comment.substr(1);
+
+                    setTimeout(() => {
+                        displayComment.html(comment);
+                    }, 250);
+                    setTimeout(() => {
+                        $('#displayTooltipTitle, #displayTooltipComment, #displayTooltipMoodvalue').css({'color': 'white', 'text-shadow': 'none'});
+                        $('.moodHighlight').css({'color': 'gold', 'text-shadow': 'none'});
+                    }, 500);
+
+                    currentIndex = tooltipItems.xLabel;
+                }
+                //return ['', comment, ''];
+			    },
+			    label: (tooltipItems, data) => {
+                    setTimeout(() => {
+
+                        $('.moodHighlight').html(tooltipItems.yLabel);
+                    }, 250);
 
 
-                        let comment;
-
-                        if (user[tooltipItems.index.toString()].moodComment !== undefined) {
-                            comment = user[tooltipItems.index.toString()].moodComment;
-                        } else {
-                            comment = '';
-                        }
-
-                        return ['', comment, ''];
-
-					},
-					label: (tooltipItems, data) => {
-						return data.datasets[tooltipItems.datasetIndex].label + ': ' + tooltipItems.yLabel + ' / 10';
-					}
-				}
+                //return 'my mood: ' + tooltipItems.yLabel + ' / 10';
+			   }
+	    }
 			},
 			legend: {
 				display: false,
@@ -550,6 +586,7 @@ $(document).ready(() => {
 	// ***REFLECT LOGIC***
 	$('#reflectButton').on('click', () => {
         formatDataForChart();
+        $('.tooltipContainer').css('display', 'none');
 		$('.dashboard').fadeOut(500, () => {
 			$('.chart').fadeIn(500);
 		});
@@ -840,6 +877,11 @@ $(document).ready(() => {
             chrome.storage.sync.set(moodContainer, function() {
                 console.log('moodContainer was saved');
 
+                chrome.alarms.create('downloadNewBackground', {
+    				delayInMinutes: 480,
+    				periodInMinutes: 480
+    			});
+
                 chrome.storage.sync.get(savedUser, function(foundUser) {
                     console.log(foundUser);
                     user = foundUser;
@@ -926,12 +968,15 @@ $(document).ready(() => {
         });
     });
 
-	$('.iconContainer').on('click', function() {
-			$('section.chart').fadeOut(500, () => {
-				$('section.dashboard').fadeIn(500);
-			});
-		});
 
+// ------------------------- DOM CHARTJS SECTION ------------------------------
+
+    $('.iconContainer').on('click', function() {
+        $('section.chart').fadeOut(500, () => {
+            $('.yourMoodflow').removeClass('makeSpanTransparent');
+            $('section.dashboard').fadeIn(500);
+        });
+    });
 
 // ------------------------- DOM OPTIONS LOGIC --------------------------------
 	// searchbar
@@ -1101,4 +1146,15 @@ $(document).ready(() => {
         }
     });
 
+    $('.logoutContainer').on('click', function() {
+        if(confirm('All your data will be lost. Are you sure?')) {
+            chrome.storage.local.clear(function () {
+                chrome.storage.sync.clear(function() {
+                    $('section.dashboard').fadeOut(500, () => {
+                        chrome.runtime.reload();
+                    });
+                });
+            });
+        }
+    });
 });
