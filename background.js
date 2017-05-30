@@ -84,11 +84,11 @@ function getBackgroundAPI() { // AJAX Unsplash API --> compressImageAndSave()
 		success: (response) => {
 			console.log('Successful AJAX Request');
 
-			$('#source_img').css('display', 'none');
-
-            savedBackground = response;
+			//$('#source_img').css('display', 'none');
+      savedBackground = response;
 			// insert src into img
 			$('#source_img').on('load', function() {
+				console.log('Image loaded and now is gonna get compressed');
 				compressImageAndSave();
 			}).attr('src', response.urls.raw);
 
@@ -100,6 +100,7 @@ function getBackgroundAPI() { // AJAX Unsplash API --> compressImageAndSave()
 }
 
 function compressImageAndSave() {
+	console.log('calling compress Image');
 	let source_img = document.getElementById("source_img");
 	let compressedSRC;
 
@@ -123,6 +124,7 @@ function compressImageAndSave() {
                 // save the new object to chrome.storage
                 chrome.storage.local.set(savedBackground, function() {
                     // Notify that we saved.
+										console.log('IMG SAVED');
                     return;
                 });
             });

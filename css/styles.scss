@@ -79,6 +79,7 @@ select:-webkit-autofill:focus {
   width: 100vw;
   min-width: 900px;
 }
+
 .overlayPNG {
   display: none;
   position: absolute;
@@ -826,13 +827,13 @@ main {
         height: 200px;
         width: 500px;
         padding: 15px;
-        background-color: rgba(0,0,0,0.05);
+        background-color: rgba(0,0,0,0.05 );
         border-radius: 3px;
         box-sizing: border-box;
 
-        -webkit-box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.3);
-        -moz-box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.3);
-        box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.3);
+        -webkit-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.3);
+        -moz-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.3);
+        box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.3);
 
         .blurText {
           transition: all 1s ease;
@@ -860,7 +861,7 @@ main {
           box-sizing: border-box;
           line-height: 23px;
           padding-top: 7px;
-
+          font-weight: 100;
           overflow-x: scroll;
           transition: all .25s ease;
         }
@@ -871,7 +872,7 @@ main {
           text-align: center;
           height: 20px;
           box-sizing: border-box;
-
+          font-weight: 100;
           transition: all .25s ease;
         }
         .moodHighlight {
@@ -906,6 +907,84 @@ main {
           font-size: 44px;
           color: gold;
           overflow: visible;
+        }
+      }
+    }
+  }
+
+  section.todoList {
+    border: 1px solid rgba(255,255,255,0.1);
+    display: none;
+    position: absolute;
+    bottom: 0;
+    left: 24px;
+
+    width: 300px;
+
+    padding: 5px;
+    //border: 1px solid blue;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: rgba(0,0,0,0.4);
+
+    div.container {
+      //border: 1px solid gold;
+      box-sizing: border-box;
+
+      div.header {
+        position: relative;
+        //border: 1px solid red;
+        font-size: 22px;
+        height: 24px;
+        padding: 2px;
+        font-weight: 100;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+
+        .ion-ios-compose-outline {
+          font-size: 28px;
+          color: lightgrey;
+          position: absolute;
+          cursor: pointer;
+          right: 4px;
+          top: -2px;
+          z-index: 5;
+          transition: all .1s ease;
+          &:hover {
+            color: gold;
+          }
+        }
+      }
+
+      div.todosContainer {
+        //border: 1px solid orange;
+        box-sizing: border-box;
+
+        padding: 0px;
+        min-height: 200px;
+        transition: all .5s ease;
+
+        div.oneTodoTemplate {
+          //border: 1px solid blue;
+          min-height: 30px;
+          box-sizing: border-box;
+
+          textarea {
+            padding: 5px 5px 0px;
+            border: 1px solid white;
+            border-radius: 4px;
+            box-sizing: border-box;
+            min-height: 30px;
+            width: 280px;
+            font-size: 14px;
+            color: white;
+            font-weight: 100;
+            background-color: rgba(0,0,0,0.55);
+            outline: none;
+            resize: none;
+            word-wrap: break-word;
+            line-height: 19px;
+          }
         }
       }
     }
@@ -963,37 +1042,15 @@ footer {
     }
   }
 
-  .picCredit {
-    text-align: center;
-    font-weight: 400;
-    font-size: 12px;
-    position: absolute;
-    bottom: 16px;
-    right: 24px;
-    color: rgba(255, 255, 255, 0.8);
-
-    #picAuthor{
-      a {
-        color: rgba(255, 255, 255, 0.8);
-      }
-      .myAnchor {
-        color: rgba(255, 255, 255, 0.8);
-        transition: color .4s ease;
-        &:hover {
-          color: white;
-        }
-      }
-    }
-  }
-
   .logoutpopup {
     display: none;
     position: absolute;
     bottom: 50px;
-    left: 50px;
-    background-color: rgba(0,0,0,0.85);
+    left: 24px;
+    background-color: rgba(0,0,0,0.5);
     width: 375px;
     border-radius: 5px;
+    border: 1px solid rgba(255,255,255,0.1);
     padding: 10px;
     font-size: 18px;
     box-sizing: border-box;
@@ -1049,6 +1106,44 @@ footer {
       &:hover {
         color: tomato;
         cursor: pointer;
+      }
+    }
+  }
+
+  section.todoListButton {
+    position: absolute;
+    bottom: 14px;
+    left: 64px;
+
+    .ion-plus {
+      cursor: pointer;
+      font-size: 25px;
+      color: rgba(255, 255, 255, 0.8);
+      &:hover {
+        color: white;
+      }
+    }
+  }
+
+  section.picCredit {
+    text-align: center;
+    font-weight: 400;
+    font-size: 12px;
+    position: absolute;
+    bottom: 16px;
+    right: 24px;
+    color: rgba(255, 255, 255, 0.8);
+
+    #picAuthor{
+      a {
+        color: rgba(255, 255, 255, 0.8);
+      }
+      .myAnchor {
+        color: rgba(255, 255, 255, 0.8);
+        transition: color .4s ease;
+        &:hover {
+          color: white;
+        }
       }
     }
   }

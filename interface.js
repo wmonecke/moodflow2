@@ -66,16 +66,20 @@ function User(
 	// and get location;
 	//myLocation
     ) {
-	this.name = name;
-	this.email = email;
-	this.gender = gender;
-	this.timezone = null;
-	this.location = null;
-	this.favoriteVideos = [];
-	this.id = null; // null until user goes premium
-	this.searchbar = true;
-	this.todolist = true;
-	this.firstTimeMeditating = true;
+	this.name              = name;
+	this.email             = email;
+	this.gender            = gender;
+	this.timezone          = null;
+	this.location          = null;
+	this.favoriteVideos    = [];
+	this.id                = null; // null until user goes premium
+    this.hideButton        = false;
+	this.searchbar         = true;
+	this.todolist          = true;
+    this.todolistStyle     = 'normal'; // 'normal' by default, user can change to kanban style
+	this.firstMeditation   = true;
+    this.leaveTodolistOpen = false;
+    this.todo              = {};
 	this.background = {
 		// times that a background should change in a day.
 		// 3 is default. User can choose between 1,3,5,8,10,12,14.
@@ -121,7 +125,7 @@ function base64ToImgAndDisplay() { // gets compressed base64 and backgroundImage
 	chrome.storage.local.get(savedBackground, function(foundBackground) {
 
 		$('#background').on('load', function() {
-			$('body, .background').fadeIn(800);
+			$('body, .background').fadeIn(400);
 		}).attr('src', foundBackground.dataURL);
 	});
 
@@ -197,7 +201,7 @@ function compressImageAndSave(frequencyEmitter) {
 	let compressedSRC;
 
 	//An Integer from 0 to 100
-	let quality = 60;
+	let quality = 40;
 	// output file format (jpg || png)
 	let output_format = 'jpg';
 	//This function returns an Image Object
@@ -391,7 +395,7 @@ function updateChart(array) {
 			beforeLabel: (tooltipItems, data) => {
                 // make title and header invisble
                 $('.yourMoodflow').addClass('makeSpanTransparent');
-                $('div.headerContainer').fadeOut(500);
+                $('div.headerContainer, footer').fadeOut(500);
                 // fadeIn Container
                 $('div.tooltipContainer').fadeIn(1000);
 
@@ -970,14 +974,13 @@ $(document).ready(() => {
         });
     });
 
-
 // ------------------------- DOM CHARTJS SECTION ------------------------------
 
     $('.iconContainer').on('click', function() {
         $('section.chart').fadeOut(500, () => {
 
             $('.yourMoodflow').removeClass('makeSpanTransparent');
-            $('div.headerContainer, section.dashboard').fadeIn(500);
+            $('div.headerContainer, footer, section.dashboard').fadeIn(500);
         });
     });
 
@@ -1158,6 +1161,39 @@ $(document).ready(() => {
                     });
                 });
             });
+        }
+    });
+
+// ------------------------- DOM TO-DO LOGIC ----------------------------------
+    var isOpen = false;
+    $('#openTodolist').on('click', () => {
+
+        if (isOpen === false) {
+            $('section.todoList').fadeIn(200);
+            isOpen = true;
+        } else if (isOpen === true) {
+            $('section.todoList').fadeOut(200);
+            isOpen = false;
+        }
+    });
+
+    $('#todoInput').keypress(function(e) {
+        let input = $(this).val();
+
+        // if user presses enter: stop line break and save to chrome.storage
+        if (e.which == 13 && input !== '') {
+            event.preventDefault();
+
+            // check if user has ever had a todo
+            if (user.todo[1] === undefined) {
+                console.log('no todo yet');
+
+                user.todo[1] = input;
+
+                chrome.storage.sync.set(user, () => {
+                    console.log('saved new todo');
+                });
+            }
         }
     });
 });

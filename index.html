@@ -171,6 +171,23 @@
         </div>
       </section>
 
+      <section class="todoList">
+        <div class="container">
+          <div class="header">
+            <span>to-do</span>
+            <span>
+              <i class="icon ion-ios-compose-outline"></i>
+            </span>
+          </div>
+
+          <div class="todosContainer">
+            <div class="oneTodoTemplate">
+              <textarea id="todoInput" name="name" placeholder="what shall be done?" rows="1" cols="80"></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Motivational video iframe and background -->
       <div class="closeiframe"></div>
       <iframe id="myiframe"
@@ -188,13 +205,9 @@
 
 <!-- FOOTER ------------------------------------------------------------------->
     <footer>
-      <section class="picCredit">
-        <p id="picLocation"></p>
-        <p id="picAuthor"></p>
-      </section>
+      <i id="logoutFadeIn" class="ion-gear-a" (click)="logoutFadeIn()"></i>
 
-
-      <div class="logoutpopup" (mouseleave)="logoutFadeOut()">
+      <div class="logoutpopup">
 
         <div class="backgroundFrequencyContainer container">
           <label for="backgroundFrequency"> Background change:</label>
@@ -219,7 +232,14 @@
         </div>
       </div>
 
-      <i id="logoutFadeIn" class="ion-gear-a" (click)="logoutFadeIn()"></i>
+      <section class="todoListButton">
+        <i id="openTodolist" class="icon ion-plus"></i>
+      </section>
+
+      <section class="picCredit">
+        <p id="picLocation"></p>
+        <p id="picAuthor"></p>
+      </section>
     </footer>
 <!-- CLOSE FOOTER ------------------------------------------------------------->
     <script type="text/javascript"  src="./js/jquery-3.2.1.min.js"></script>
