@@ -827,9 +827,10 @@ main {
         height: 200px;
         width: 500px;
         padding: 15px;
-        background-color: rgba(0,0,0,0.05 );
+        background-color: rgba(0,0,0,0.2);
         border-radius: 3px;
         box-sizing: border-box;
+        border: 1px solid rgba(255,255,255,0.1);
 
         -webkit-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.3);
         -moz-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.3);
@@ -919,6 +920,8 @@ main {
     bottom: 0;
     left: 24px;
 
+    max-height: 80vh;
+    overflow-y: scroll;
     width: 300px;
 
     padding: 5px;
@@ -926,6 +929,7 @@ main {
     border-radius: 4px;
     box-sizing: border-box;
     background-color: rgba(0,0,0,0.4);
+    transition: all .5s ease;
 
     div.container {
       //border: 1px solid gold;
@@ -957,22 +961,21 @@ main {
       }
 
       div.todosContainer {
-        //border: 1px solid orange;
         box-sizing: border-box;
 
         padding: 0px;
         min-height: 200px;
+
         transition: all .5s ease;
 
         div.oneTodoTemplate {
-          //border: 1px solid blue;
           min-height: 30px;
           box-sizing: border-box;
 
           textarea {
             padding: 5px 5px 0px;
             border: 1px solid white;
-            border-radius: 4px;
+            border-radius: 3px;
             box-sizing: border-box;
             min-height: 30px;
             width: 280px;
@@ -984,6 +987,42 @@ main {
             resize: none;
             word-wrap: break-word;
             line-height: 19px;
+          }
+        }
+
+        div.oneTodo {
+          position: relative;
+          min-height: 30px;
+          box-sizing: border-box;
+          margin-bottom: 5px;
+
+          div.todoText {
+            padding: 4px;
+            font-size: 14px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin: auto;
+            min-height: 30px;
+            border-radius: 3px;
+            box-sizing: border-box;
+            width: 280px;
+            word-wrap: break-word;
+            outline: none;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+          }
+
+          span.eraseTodo {
+            display: none;
+            cursor: pointer;
+            position: absolute;
+            top: 2px;
+            right: 8px;
+            font-size: 24px;
+            transition: color .2s ease;
+            &:hover {
+              color: tomato;
+            }
           }
         }
       }

@@ -5,8 +5,7 @@ var _now = new Date();
 var today = _now.getDate();
 var myDataContainer = [];
 
-var testArray = [];
-testArray.push({ x: 5, y: 9}, { x: 6, y: 7});
+
 // start app handler
 bootstrapApp();
 function bootstrapApp() {
@@ -22,11 +21,9 @@ function bootstrapApp() {
 		}
 
 		user = foundUser;
+        renderNormalTodo();
 
         let todayAsAString = today.toString();
-
-        console.log(user[todayAsAString]);
-        console.log(user[todayAsAString].moodValue);
 
         if (user[todayAsAString].moodValue === '' || undefined) {
             $('section.dashboard').css('display', 'none');
@@ -201,7 +198,7 @@ function compressImageAndSave(frequencyEmitter) {
 	let compressedSRC;
 
 	//An Integer from 0 to 100
-	let quality = 40;
+	let quality = 30;
 	// output file format (jpg || png)
 	let output_format = 'jpg';
 	//This function returns an Image Object
@@ -474,6 +471,49 @@ function updateChart(array) {
 
 		}
 	});
+}
+function saveTodo(input) {
+    if (user.todo[1] === undefined) {
+        console.log('this is the first todo eva');
+
+        user.todo[1] = input;
+
+        chrome.storage.sync.set(user, function() {
+            console.log('saved a new todo');
+            console.log('user withing saveTodo()', user);
+        });
+
+        return 1;
+    }
+
+    // loop once through whole object to save the last key in the var todoKey
+    for (var todoKey in user.todo) { }
+
+    // last key is saved in todoKey and we convert it into a number
+    todoKey = todoKey*1;
+
+    let keyToBeSaved = todoKey + 1;
+
+    user.todo[keyToBeSaved] = input;
+
+    chrome.storage.sync.set(user, function() {
+        console.log('saved a new todo');
+    });
+
+    return keyToBeSaved;
+}
+function renderNormalTodo() { // being called within render dashboard
+    for (let key in user.todo) {
+        console.log(user.todo[key]);
+        console.log( typeof key);
+        let myTodo = `
+            <div class="oneTodo" id="${key}">
+                <div class="todoText">${user.todo[key]}</div>
+                <span class="eraseTodo">
+                    <i class="icon ion-ios-close-outline"></i>
+                </span>
+            </div>`;
+    }
 }
 // called after getting user
 function renderDashboard(emitter) {
@@ -1164,7 +1204,7 @@ $(document).ready(() => {
         }
     });
 
-// ------------------------- DOM TO-DO LOGIC ----------------------------------
+// ----------------------- DOM TO-DO LIST LOGIC -------------------------------
     var isOpen = false;
     $('#openTodolist').on('click', () => {
 
@@ -1177,23 +1217,56 @@ $(document).ready(() => {
         }
     });
 
+    // on keypress save and append child
     $('#todoInput').keypress(function(e) {
         let input = $(this).val();
 
         // if user presses enter: stop line break and save to chrome.storage
-        if (e.which == 13 && input !== '') {
+        if (e.which === 13 && input !== '') {
             event.preventDefault();
 
-            // check if user has ever had a todo
-            if (user.todo[1] === undefined) {
-                console.log('no todo yet');
+            let todoID = saveTodo(input);
 
-                user.todo[1] = input;
+            console.log('todoID', todoID);
 
-                chrome.storage.sync.set(user, () => {
-                    console.log('saved new todo');
-                });
-            }
+            //$('.oneTodoTemplate').fadeOut(200, () => {
+                let myTodo = `
+                    <div class="oneTodo" id="${todoID}">
+                        <div class="todoText"></div>
+                        <span class="eraseTodo">
+                            <i class="icon ion-ios-close-outline"></i>
+                        </span>
+                    </div>`;
+
+                $('.todosContainer').append(myTodo);
+                $(`#${todoID} > .todoText`).html(input);
+            //});
+            $('#todoInput').val('');
         }
+    });
+
+    // fade in  and fade out erase button
+    $('.todosContainer').on('mouseenter', '.oneTodo', function () {
+        $(this).find('.eraseTodo').fadeIn(200);
+    });
+    $('.todosContainer').on('mouseleave', '.oneTodo', function () {
+        $(this).find('.eraseTodo').fadeOut(200);
+    });
+
+    $('.todosContainer').on('click', '.ion-ios-close-outline', function () {
+        let idToRemove = $(this).closest('.oneTodo').attr('id');
+
+        console.log('user before getting into chrome.storage', user);
+
+        chrome.storage.sync.get(user, (foundUser) => {
+            // get the current state of the user object so it can be modified in the front-end
+            user = foundUser;
+
+            delete user.todo[idToRemove];
+
+            chrome.storage.sync.set(user, () => {
+                $(this).closest('.oneTodo').fadeOut(400).remove();
+            });
+        });
     });
 });
