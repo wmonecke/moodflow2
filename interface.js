@@ -1,4 +1,10 @@
 // ------------------------ BOOTRSTRAP APP ---------------------------------
+// magic so that textarea focus works
+if(location.search !== "?foo") {
+    location.search = "?foo";
+    throw new Error;  // load everything on the next page;                // stop execution on this page
+}
+
 var user = {};
 var savedBackground = {};
 var _now = new Date();
@@ -609,6 +615,8 @@ function injectYTVideo() {
 }
 // ------------------------- JQUERY DOM EVENTS LOGIC --------------------------
 $(document).ready(() => {
+
+    let isOpen = user.leaveTodolistOpen;
 	// ------------------------ DASHBOARD LOGIC -----------------------------------
 	// ***HEADER*** google searchbar animation and palceholder logic
 	$('#placeholder').on('click', () => {
@@ -662,6 +670,7 @@ $(document).ready(() => {
 	// ***REFLECT LOGIC***
 	$('#reflectButton').on('click', () => {
         formatDataForChart();
+        $('section.todoList').fadeOut(500);
         $('.tooltipContainer').css('display', 'none');
 		$('.dashboard').fadeOut(500, () => {
 			$('.chart').fadeIn(500);
@@ -1056,6 +1065,10 @@ $(document).ready(() => {
 
             $('.yourMoodflow').removeClass('makeSpanTransparent');
             $('div.headerContainer, footer, section.dashboard').fadeIn(500);
+            if (isOpen) {
+                $('section.todoList').fadeIn(300);
+            }
+
         });
     });
 
@@ -1241,13 +1254,14 @@ $(document).ready(() => {
     });
 
     // ----------------------- DOM TO-DO LIST LOGIC -------------------------------
-    var isOpen = false;
+
     $('#openTodolist').on('click', () => {
         $('.logoutpopup').fadeOut(300);
         let update;
 
         if (isOpen === false) {
             $('section.todoList').fadeIn(100);
+            $('#todoInput').focus();
 
             update = { leaveTodolistOpen: true };
 
@@ -1331,7 +1345,7 @@ $(document).ready(() => {
                     </div> `;
 
                 $('.todosContainer').append(myTodoTemplate);
-                
+
                 $('.attached').fadeIn(400, function() {
                     $(this).find(">:first-child").focus();
                 });
@@ -1357,10 +1371,11 @@ $(document).ready(() => {
 
         $('.todosContainer').append(myTodoTemplate);
 
-        $('.attached').fadeIn(400);
+        $('.attached').fadeIn(400, () => {
 
-        setTimeout(() => {
-            $('.attached').focus();
-        }, 500);
+            $('#todoInput').focus();
+        });
+
+
     });
 });
