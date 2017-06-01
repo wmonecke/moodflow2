@@ -5,7 +5,6 @@ var _now = new Date();
 var today = _now.getDate();
 var myDataContainer = [];
 
-
 // start app handler
 bootstrapApp();
 function bootstrapApp() {
@@ -21,7 +20,7 @@ function bootstrapApp() {
 		}
 
 		user = foundUser;
-        renderNormalTodo();
+
 
         let todayAsAString = today.toString();
 
@@ -503,16 +502,37 @@ function saveTodo(input) {
     return keyToBeSaved;
 }
 function renderNormalTodo() { // being called within render dashboard
+
+    if (user.leaveTodolistOpen) {
+        $('section.todoList').css('display', 'block');
+    }
+
+    if ($.isEmptyObject(user.todo)) {
+        console.log('obejct is empty');
+
+        let myTodoTemplate = `
+            <div class="oneTodoTemplate attached">
+                <textarea id="todoInput" name="name" placeholder="what shall be done?" rows="1" cols="80"></textarea>
+            </div> `;
+
+        $('.todosContainer').append(myTodoTemplate);
+        $('.attached').css('display', 'block');
+        return;
+    }
+
     for (let key in user.todo) {
-        console.log(user.todo[key]);
-        console.log( typeof key);
+        // transform objects JSON key into a number, so it can be inserted into the id
+        let keyAsANumber = key*1;
+
         let myTodo = `
-            <div class="oneTodo" id="${key}">
+            <div class="oneTodo" id="${keyAsANumber}">
                 <div class="todoText">${user.todo[key]}</div>
                 <span class="eraseTodo">
                     <i class="icon ion-ios-close-outline"></i>
                 </span>
             </div>`;
+
+        $('.todosContainer').append(myTodo);
     }
 }
 // called after getting user
@@ -575,6 +595,8 @@ function renderDashboard(emitter) {
 
     // users name in moodflow input
     $('.moodInputGreeting').html(`Good day, ${user.name}.`);
+
+    renderNormalTodo();
 }
 function injectYTVideo() {
 	var videos = ['https://www.youtube.com/embed/SuPLxQD4akQ?autoplay=1', 'https://www.youtube.com/embed/26U_seo0a1g?autoplay=1', 'https://www.youtube.com/embed/Yb-OYmHVchQ?autoplay=1', 'https://www.youtube.com/embed/K2bw52VjJLM?autoplay=1', 'https://www.youtube.com/embed/eRaTpTVTENU?autoplay=1', 'https://www.youtube.com/embed/2_fDhqRk_Ro?autoplay=1', 'https://www.youtube.com/embed/DvtxOzO6OAE?autoplay=1', 'https://www.youtube.com/embed/D_Vg4uyYwEk?autoplay=1',
@@ -620,12 +642,20 @@ $(document).ready(() => {
 
 	// ***MOTIVATE LOGIC***
 	$('#motivateButton').on('click', () => {
+        $('.headerContainer, footer').fadeOut(500);
+        $('section.todoList').fadeOut(500);
 		injectYTVideo();
 		$('.myiframe, .closeiframe').fadeIn(400);
 	});
 	$('.closeiframe').on('click', () => {
 		$('.closeiframe, .myiframe').fadeOut(800, () => {
 			$('.myiframe').attr('src', '');
+            $('.headerContainer, footer').fadeIn(500);
+
+            // check if todo list was open or closed
+            if (isOpen) {
+                $('section.todoList').fadeIn(600);
+            }
 		});
 	});
 
@@ -642,14 +672,19 @@ $(document).ready(() => {
 
 	// ***FOOTER*** logout popup fadeIn and fadeOut
 	$('#logoutFadeIn').on('click', () => {
+        $('section.todoList').fadeOut(100);
+
 		$('.logoutpopup').fadeIn(300);
 
 		$('.logoutpopup').mouseleave(() => {
 			$('.logoutpopup').fadeOut(300);
+
+            if (isOpen) {
+                $('section.todoList').fadeIn(300);
+            }
 		});
 	});
-
-// ------------------------- DOM LOGIN LOGIC ----------------------------------
+    // ------------------------- DOM LOGIN LOGIC ----------------------------------
 	// first time login message fade out and calling
 	$('.darkenBackground, #firstTimeClose').on('click', () => {
 		$('.darkenBackground, .welcomeMessage').fadeOut(500, () => {
@@ -943,7 +978,7 @@ $(document).ready(() => {
 		});
 	});
 
-// ------------------------ DOM MOODINPUT LOGIC -------------------------------
+    // ------------------------ DOM MOODINPUT LOGIC -------------------------------
     // realtime moodValue updating and continueButton fadein
     let currentDay;
     let mood;
@@ -1014,7 +1049,7 @@ $(document).ready(() => {
         });
     });
 
-// ------------------------- DOM CHARTJS SECTION ------------------------------
+    // ------------------------- DOM CHARTJS SECTION ------------------------------
 
     $('.iconContainer').on('click', function() {
         $('section.chart').fadeOut(500, () => {
@@ -1024,7 +1059,7 @@ $(document).ready(() => {
         });
     });
 
-// ------------------------- DOM OPTIONS LOGIC --------------------------------
+    // ------------------------- DOM OPTIONS LOGIC --------------------------------
 	// searchbar
 	$('input.searchbar').on('click', function() {
 		let checked = $(this).prop('checked');
@@ -1192,6 +1227,7 @@ $(document).ready(() => {
         }
     });
 
+    // log out button
     $('.logoutContainer').on('click', function() {
         if(confirm('All your data will be lost. Are you sure?')) {
             chrome.storage.local.clear(function () {
@@ -1204,22 +1240,43 @@ $(document).ready(() => {
         }
     });
 
-// ----------------------- DOM TO-DO LIST LOGIC -------------------------------
+    // ----------------------- DOM TO-DO LIST LOGIC -------------------------------
     var isOpen = false;
     $('#openTodolist').on('click', () => {
+        $('.logoutpopup').fadeOut(300);
+        let update;
 
         if (isOpen === false) {
-            $('section.todoList').fadeIn(200);
-            isOpen = true;
+            $('section.todoList').fadeIn(100);
+
+            update = { leaveTodolistOpen: true };
+
+            chrome.storage.sync.set(update, function() {
+                console.log('successful update');
+                isOpen = true;
+            });
         } else if (isOpen === true) {
-            $('section.todoList').fadeOut(200);
-            isOpen = false;
+            $('section.todoList').fadeOut(100);
+
+            update = { leaveTodolistOpen: false };
+
+            chrome.storage.sync.set(update, function() {
+                console.log('successful update');
+                isOpen = false;
+            });
         }
     });
-
     // on keypress save and append child
-    $('#todoInput').keypress(function(e) {
-        let input = $(this).val();
+    // how to attach events to dynamically added html?
+    // attach an 'on-event' to the PARENT of the child that is going to trigger it.
+    // the second param after the event name, in this case keydown will be the one that will be referenced
+    // in other words if we use the 'this' keyword within the function it will refer to
+    // that second parameter.
+    $('.todosContainer').on('keydown', '#todoInput', function(e) {
+        let unformattedInput = $(this).val();
+
+        // makin the first letter uppercase
+        let input = unformattedInput.charAt(0).toUpperCase() + unformattedInput.slice(1);
 
         // if user presses enter: stop line break and save to chrome.storage
         if (e.which === 13 && input !== '') {
@@ -1229,19 +1286,19 @@ $(document).ready(() => {
 
             console.log('todoID', todoID);
 
-            //$('.oneTodoTemplate').fadeOut(200, () => {
-                let myTodo = `
-                    <div class="oneTodo" id="${todoID}">
-                        <div class="todoText"></div>
-                        <span class="eraseTodo">
-                            <i class="icon ion-ios-close-outline"></i>
-                        </span>
-                    </div>`;
+            let myTodo = `
+                <div class="oneTodo" id="${todoID}">
+                    <div class="todoText"></div>
+                    <span class="eraseTodo">
+                        <i class="icon ion-ios-close-outline"></i>
+                    </span>
+                </div>`;
 
-                $('.todosContainer').append(myTodo);
-                $(`#${todoID} > .todoText`).html(input);
-            //});
+            $('.todosContainer').append(myTodo);
+            $(`#${todoID} > .todoText`).html(input);
+
             $('#todoInput').val('');
+            $('.oneTodoTemplate').remove();
         }
     });
 
@@ -1253,6 +1310,7 @@ $(document).ready(() => {
         $(this).find('.eraseTodo').fadeOut(200);
     });
 
+    // removing an item from the todo list
     $('.todosContainer').on('click', '.ion-ios-close-outline', function () {
         let idToRemove = $(this).closest('.oneTodo').attr('id');
 
@@ -1264,9 +1322,45 @@ $(document).ready(() => {
 
             delete user.todo[idToRemove];
 
+            if ($.isEmptyObject(user.todo) && !$('#todoInput').length) {
+                console.log('obejct is empty');
+
+                let myTodoTemplate = `
+                    <div class="oneTodoTemplate attached">
+                        <textarea id="todoInput" name="name" placeholder="what shall be done?" rows="1" cols="80"></textarea>
+                    </div> `;
+
+                $('.todosContainer').append(myTodoTemplate);
+                
+                $('.attached').fadeIn(400, function() {
+                    $(this).find(">:first-child").focus();
+                });
+            }
+
             chrome.storage.sync.set(user, () => {
                 $(this).closest('.oneTodo').fadeOut(400).remove();
             });
         });
+    });
+
+    // add another todo list, click on 'add another todo' - icon
+    $('.anothaOne').on('click', function() {
+        if ($('#todoInput').length) {
+            console.log('bruh there is one there already');
+            return;
+        }
+
+        let myTodoTemplate = `
+            <div class="oneTodoTemplate attached">
+                <textarea id="todoInput" name="name" placeholder="what shall be done?" rows="1" cols="80"></textarea>
+            </div> `;
+
+        $('.todosContainer').append(myTodoTemplate);
+
+        $('.attached').fadeIn(400);
+
+        setTimeout(() => {
+            $('.attached').focus();
+        }, 500);
     });
 });

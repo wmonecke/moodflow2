@@ -952,7 +952,7 @@ main {
           cursor: pointer;
           right: 4px;
           top: -2px;
-          z-index: 5;
+          z-index: 2;
           transition: all .1s ease;
           &:hover {
             color: gold;
@@ -969,6 +969,7 @@ main {
         transition: all .5s ease;
 
         div.oneTodoTemplate {
+          display: none;
           min-height: 30px;
           box-sizing: border-box;
 
