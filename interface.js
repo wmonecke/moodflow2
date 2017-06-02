@@ -26,13 +26,11 @@ function bootstrapApp() {
 		}
 
 		user = foundUser;
-        checkIfMoodsShouldReset();
-
-
 
 
 		// this function is in charge of displaying stuff in the dashboard
 		// for example it is in charge of displaying the users name, searchbar or quotes
+        checkIfMoodsShouldReset();
 		renderDashboard();
 		//formatDataForChart();
 		return;
@@ -544,10 +542,10 @@ function checkIfMoodsShouldReset() { // this function checks if is the end of th
 
     let usersMonth = user.currentMonth;
 
-    // if (currentMonth === usersMonth) {
-    //     console.log('no changes to be done');
-    //     return;
-    // }
+    if (currentMonth === usersMonth) {
+        console.log('no changes to be done');
+        return;
+    }
 
     console.log('time to reset');
 
@@ -561,15 +559,150 @@ function checkIfMoodsShouldReset() { // this function checks if is the end of th
 			// filter out keys that are NOT numbers
 			if (isNaN(key) === false) {
 
-                console.log('before', key, typeof key);
                 // convert back to string so key can be removed
                 let stringKey = key.toString();
 
-                console.log('after', stringKey, typeof stringKey);
+                delete user[stringKey];
 			}
 		}
 	}
 
+    let moodContainer = {
+        1: {
+            moodComment: "",
+            moodValue: ""
+        },
+        2: {
+            moodComment: "",
+            moodValue: ""
+        },
+        3: {
+            moodComment: "",
+            moodValue: ""
+        },
+        4: {
+            moodComment: "",
+            moodValue: ""
+        },
+        5: {
+            moodComment: "",
+            moodValue: ""
+        },
+        6: {
+            moodComment: "",
+            moodValue: ""
+        },
+        7: {
+            moodComment: "",
+            moodValue: ""
+        },
+        8: {
+            moodComment: "",
+            moodValue: ""
+        },
+        9: {
+            moodComment: "",
+            moodValue: ""
+        },
+        10: {
+            moodComment: "",
+            moodValue: ""
+        },
+        11: {
+            moodComment: "",
+            moodValue: ""
+        },
+        12: {
+            moodComment: "",
+            moodValue: ""
+        },
+        13: {
+            moodComment: "",
+            moodValue: ""
+        },
+        14: {
+            moodComment: "",
+            moodValue: ""
+        },
+        15: {
+            moodComment: "",
+            moodValue: ""
+        },
+        16: {
+            moodComment: "",
+            moodValue: ""
+        },
+        17: {
+            moodComment: "",
+            moodValue: ""
+        },
+        18: {
+            moodComment: "",
+            moodValue: ""
+        },
+        19: {
+            moodComment: "",
+            moodValue: ""
+        },
+        20: {
+            moodComment: "",
+            moodValue: ""
+        },
+        21: {
+            moodComment: "",
+            moodValue: ""
+        },
+        22: {
+            moodComment: "",
+            moodValue: ""
+        },
+        23: {
+            moodComment: "",
+            moodValue: ""
+        },
+        24: {
+            moodComment: "",
+            moodValue: ""
+        },
+        25: {
+            moodComment: "",
+            moodValue: ""
+        },
+        26: {
+            moodComment: "",
+            moodValue: ""
+        },
+        27: {
+            moodComment: "",
+            moodValue: ""
+        },
+        28: {
+            moodComment: "",
+            moodValue: ""
+        },
+        29: {
+            moodComment: "",
+            moodValue: ""
+        },
+        30: {
+            moodComment: "",
+            moodValue: ""
+        },
+        31: {
+            moodComment: "",
+            moodValue: ""
+        },
+    };
+
+    chrome.storage.sync.set(moodContainer, function() {
+
+        chrome.storage.sync.get(savedUser, function(foundUser) {
+            console.log(foundUser);
+
+            user = foundUser;
+            formatDataForChart();
+        });
+    });
 
 
 }
@@ -692,7 +825,7 @@ $(document).ready(() => {
 
 	// ***MOTIVATE LOGIC***
 	$('#motivateButton').on('click', () => {
-        $('.myQuote').fadeIn(500);
+        $('.myQuote').fadeIn(2000);
         setTimeout(() => {
             $('.myQuote').fadeOut(500);
         }, 7000);
@@ -723,6 +856,27 @@ $(document).ready(() => {
 	});
 
 	// ***MEDITATE LOGIC***
+    $('#meditateButton').on('click', () => {
+        $('.transitionContainer').css('display', 'block');
+        setTimeout(() => {
+            let myTransitionEvent = whichTransitionEvent();
+            $('.eyeClosing').css('box-shadow', 'inset 0vw 0vw 0vw 0vw transparent');
+            $('.eyeClosing').css('transform', 'scale(1.2,1.2) translate(-25%, -27%)').css('box-shadow', 'inset 0vw 0vw 4vw 100vw black');
+
+            $('.eyeClosing').one(myTransitionEvent, function(event) {
+                // when animation finishes do
+                console.log('done');
+                return;
+            });
+        }, 10);
+
+
+        // trigger this after 5010 miliseconds. after animation is done.
+        // setTimeout(() => {
+        //     console.log('now');
+        // }, 5011);
+
+    });
 
 	// ***FOOTER*** logout popup fadeIn and fadeOut
 	$('#logoutFadeIn').on('click', () => {
@@ -815,7 +969,7 @@ $(document).ready(() => {
 						// when animation finishes do
 						$("input.emailInput").removeClass("animated shake");
 						return;
-					});
+				});
 				// if email is valid save it into var and fade out
 			} else if (validatedEmail === true) {
 

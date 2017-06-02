@@ -1201,6 +1201,44 @@ footer {
     }
   }
 }
+// --------------------------- CLOSE FOOTER -----------------------------------
+
+
+
+// ------------------------------- EYE CLOSING CSS ----------------------------
+.transitionContainer {
+  display: none;
+  position: absolute;
+  top: 0; right: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: transparent;
+  overflow: hidden;
+  transition: all 4s ease;
+}
+
+.eyeClosing {
+  position: absolute;
+  z-index: 4;
+  top: -25vh;
+  right: 0; left: 0;
+  margin: auto;
+  width: 400vw;
+  box-sizing: content-box;
+  background-color: transparent;
+  height: 300vh;
+  box-shadow: inset 0vw 0vw 0vw 0vw transparent;
+  transition: all 5s ease;
+  border: 1px solid transparent;
+  border-radius: 50%;
+}
+.shadow {
+  box-shadow: inset 0vw 0vw 4vw 100vw black !important;
+}
+// --------------------------- CLOSE EYE CLOSING CSS --------------------------
+
+
+
 
 // ------------------------------ ANIMATION -----------------------------------
 @keyframes checkboxAnimation {
@@ -1303,8 +1341,11 @@ footer {
 	50% { opacity:0; }
 	100% { opacity:1; }
 }
-// ------------------------- CSS TOOLTIP --------------------------------------
+// ------------------------ CLOSE ANIMATION -----------------------------------
 
+
+
+// ------------------------- CSS TOOLTIP --------------------------------------
 button[data-balloon] {
   overflow: visible;
 }
