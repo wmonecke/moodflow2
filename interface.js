@@ -2,7 +2,7 @@
 // magic so that textarea focus works
 if(location.search !== "?foo") {
     location.search = "?foo";
-    throw new Error;  // load everything on the next page;                // stop execution on this page
+    throw new Error();  // load everything on the next page;                // stop execution on this page
 }
 
 var user = {};
@@ -26,14 +26,9 @@ function bootstrapApp() {
 		}
 
 		user = foundUser;
+        checkIfMoodsShouldReset();
 
 
-        let todayAsAString = today.toString();
-
-        if (user[todayAsAString].moodValue === '' || undefined) {
-            $('section.dashboard').css('display', 'none');
-            $('section.moodInput').css('display', 'block');
-        }
 
 
 		// this function is in charge of displaying stuff in the dashboard
@@ -79,6 +74,7 @@ function User(
 	this.searchbar         = true;
 	this.todolist          = true;
     this.todolistStyle     = 'normal'; // 'normal' by default, user can change to kanban style
+    this.currentMonth      = new Date().getMonth();
 	this.firstMeditation   = true;
     this.leaveTodolistOpen = false;
     this.todo              = {};
@@ -203,7 +199,7 @@ function compressImageAndSave(frequencyEmitter) {
 	let compressedSRC;
 
 	//An Integer from 0 to 100
-	let quality = 30;
+	let quality = 40;
 	// output file format (jpg || png)
 	let output_format = 'jpg';
 	//This function returns an Image Object
@@ -511,6 +507,7 @@ function renderNormalTodo() { // being called within render dashboard
 
     if (user.leaveTodolistOpen) {
         $('section.todoList').css('display', 'block');
+        var isOpen = true;
     }
 
     if ($.isEmptyObject(user.todo)) {
@@ -541,22 +538,67 @@ function renderNormalTodo() { // being called within render dashboard
         $('.todosContainer').append(myTodo);
     }
 }
+function checkIfMoodsShouldReset() { // this function checks if is the end of the month. if it is it resets the moods
+    let currentMonth = new Date();
+    currentMonth = currentMonth.getMonth();
+
+    let usersMonth = user.currentMonth;
+
+    // if (currentMonth === usersMonth) {
+    //     console.log('no changes to be done');
+    //     return;
+    // }
+
+    console.log('time to reset');
+
+    for (var key in user) {
+
+	 	if (user.hasOwnProperty(key)) {
+
+			// convert string to number (fastest way for chrome)
+			key = key*1;
+
+			// filter out keys that are NOT numbers
+			if (isNaN(key) === false) {
+
+                console.log('before', key, typeof key);
+                // convert back to string so key can be removed
+                let stringKey = key.toString();
+
+                console.log('after', stringKey, typeof stringKey);
+			}
+		}
+	}
+
+
+
+}
 // called after getting user
 function renderDashboard(emitter) {
 	$('.greeting').html(`Good day, ${user.name}.`);
+
+    let todayAsAString = today.toString();
+
+    if (user[todayAsAString] === undefined) {
+        console.log('undefined');
+    } else if (user[todayAsAString].moodValue === '' || undefined) {
+        $('section.dashboard').css('display', 'none');
+        $('section.moodInput').css('display', 'block');
+    }
+    // if (user[todayAsAString].moodValue === '' || undefined) {
+    //     $('section.dashboard').css('display', 'none');
+    //     $('section.moodInput').css('display', 'block');
+    // }
 
 	// background frequency
 	let frequencyNumber = user.background.backgroundChangeFrequency;
 
     // if emitter === 1 then function jis being called after user has signed up
     if (emitter === 1) {
-		chrome.alarms.create('downloadNewBackground', {
-			delayInMinutes: 480,
-			periodInMinutes: 480
-		});
-
         $('.googleSearch').fadeIn(2000);
-			$('#frequencyNumber').html('every 8 hours');
+		$('#frequencyNumber').html('every 8 hours');
+        $('#reflectButton').css('display', 'none');
+        var isOpen = false;
         return;
     }
 
@@ -601,7 +643,7 @@ function renderDashboard(emitter) {
 
     // users name in moodflow input
     $('.moodInputGreeting').html(`Good day, ${user.name}.`);
-
+    formatDataForChart();
     renderNormalTodo();
 }
 function injectYTVideo() {
@@ -650,6 +692,10 @@ $(document).ready(() => {
 
 	// ***MOTIVATE LOGIC***
 	$('#motivateButton').on('click', () => {
+        $('.myQuote').fadeIn(500);
+        setTimeout(() => {
+            $('.myQuote').fadeOut(500);
+        }, 7000);
         $('.headerContainer, footer').fadeOut(500);
         $('section.todoList').fadeOut(500);
 		injectYTVideo();
@@ -669,7 +715,6 @@ $(document).ready(() => {
 
 	// ***REFLECT LOGIC***
 	$('#reflectButton').on('click', () => {
-        formatDataForChart();
         $('section.todoList').fadeOut(500);
         $('.tooltipContainer').css('display', 'none');
 		$('.dashboard').fadeOut(500, () => {
@@ -975,6 +1020,9 @@ $(document).ready(() => {
                 chrome.storage.sync.get(savedUser, function(foundUser) {
                     console.log(foundUser);
                     user = foundUser;
+
+                    console.log(user);
+
                     renderDashboard(1);
 
                     // fadeOut login section and fadeIn dashboard
@@ -1257,9 +1305,31 @@ $(document).ready(() => {
 
     $('#openTodolist').on('click', () => {
         $('.logoutpopup').fadeOut(300);
-        let update;
+
+        if (isOpen === undefined) {
+
+            isOpen = false;
+
+            if ($('#todoInput').length ) {
+                console.log('bruh there is one there already');
+                return;
+            }
+
+
+            let myTodoTemplate = `
+                <div class="oneTodoTemplate attached">
+                    <textarea id="todoInput" name="name" placeholder="what shall be done?" rows="1" cols="80"></textarea>
+                </div> `;
+
+            $('.todosContainer').append(myTodoTemplate);
+
+            $('.attached').fadeIn(400, () => {
+                $('#todoInput').focus();
+            });
+        }
 
         if (isOpen === false) {
+            console.log('now openinig');
             $('section.todoList').fadeIn(100);
             $('#todoInput').focus();
 
@@ -1270,6 +1340,7 @@ $(document).ready(() => {
                 isOpen = true;
             });
         } else if (isOpen === true) {
+            console.log('now closing');
             $('section.todoList').fadeOut(100);
 
             update = { leaveTodolistOpen: false };
@@ -1371,11 +1442,8 @@ $(document).ready(() => {
 
         $('.todosContainer').append(myTodoTemplate);
 
-        $('.attached').fadeIn(400, () => {
-
+        $('.attached').fadeIn(200, () => {
             $('#todoInput').focus();
         });
-
-
     });
 });

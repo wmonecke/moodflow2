@@ -1041,6 +1041,19 @@ main {
     width: 100vw;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.5);
+
+    .myQuote {
+      display: none;
+      font-style: oblique;
+      line-height: 22px;
+      position: absolute;
+      font-weight: 100;
+      font-size: 16px;
+      top: 4vh;
+      right: 0;
+      left: 0;
+      margin: auto;
+    }
   }
   .myiframe {
     position: absolute;
