@@ -106,7 +106,6 @@
           </div>
 
         </form>
-
       </section>
 
       <section class="dashboard">
@@ -172,7 +171,22 @@
       </section>
 
       <section class="meditate">
-        <div class="container">
+        <span id="closeMeditation" class="iconContainer"><i class="icon ion-close-round"></i></span>
+
+        <div class="meditateContainer">
+          <div id="welcomeMessage" class="message typed-fade-out"></div>
+          <div id="hasMeditated" class="message typed-fade-out"></div>
+
+
+
+          <div class="target">
+            <div class="scaleAnimation">
+              <div class="bounceAnimation">
+                <div class="center"></div>
+              </div>
+            </div>
+          </div>
+
 
         </div>
       </section>
@@ -222,6 +236,11 @@
 
       <div class="logoutpopup">
 
+        <div class="leaveBackgroundOn container">
+          <label for="leaveBackgroundOn">Do not change the current background: </label>
+          <input id="leaveBackgroundOn" type="checkbox">
+        </div>
+
         <div class="backgroundFrequencyContainer container">
           <label for="backgroundFrequency"> Background change:</label>
           <span class="spanContainer">
@@ -260,7 +279,7 @@
 
 <!-- TRANSITION INTO MEDITATE DIVS -------------------------------------------->
     <div id="parent" class="transitionContainer">
-      <div id="child" class="eyeClosing"></div>
+        <div id="child" class="eyeClosing"></div>
     </div>
 <!-- CLOSE TRANSITION INTO MEDITATE DIVS -------------------------------------->
 
@@ -271,6 +290,7 @@
     <script type="text/javascript"  src="./js/JIC.js"></script>
     <script type="text/javascript"  src="./js/moment.js"></script>
     <script type="text/javascript"  src="./js/chart.js"></script>
+    <script type="text/javascript"  src="./js/ion.sound.min.js"></script>
     <script type="text/javascript"  src="./interface.js"></script>
   </body>
 </html>

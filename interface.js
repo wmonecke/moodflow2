@@ -234,6 +234,50 @@ function compressImageAndSave(frequencyEmitter) {
 
 } // works in tandem with getBackgroundAPI()	// this function changes the background image 3 times per day depending on the current times
 // utilities
+function startMeditation() { //fadesIn the meditation section
+
+    function welcomeMessage() {
+
+        ion.sound.play("relaxing");
+
+        $("#welcomeMessage").typed({
+            strings: [`Welcome, ${user.name}.`, "Since this is your first time here...^1000<br> I hereby welcome you warmly^1000 to the meditation center.", `Now, ${user.name}...^1000 Meditation can be a very powerful tool^1000 if used right.<br>^1000 It has been proven to be as effective as medication in the treatment of depression and bipolarity.`, `And if you thankfully do not suffer from those diseases,^1000<br> it channels your thoughts towards the potential that lies^500 within you.`,     `Meditation helps you reflect on the problems that you are currently facing in your life^1000<br>and makes it easier for you to find the solutions.`, "Together we can realize your full potential^1000<br>and gain control of your inner emotional well-being.", "Moreover, if you find inner peace^1000<br>it will positively reflect onto other aspects of your life.", "Relax^1000, focus on your breathing^1000<br>and firstly try to think about the things you are gratefull in this life.<br>^1000", `Let us start.`],
+            typeSpeed: 10,
+            startDelay: 2000,
+            backDelay: 2000,
+            fadeOut: true,
+            fadeOutClass: 'typed-fade-out',
+            fadeOutSpeed: 1000,
+            showCursor: true,
+            cursorChar: "",
+            callback: () => {
+                $('#welcomeMessage').fadeOut(500);
+                $('.center').css('animation-play-state', 'paused');
+                $('.center').css('animation-name', 'breathIn');
+                $('.center').css('animation-play-state', 'running');
+            }
+        });
+    }
+    function alreadyMeditated() {
+
+        ion.sound.play("relaxing");
+    }
+
+
+    $('section.meditate').css('display', 'flex');
+    setTimeout(() => {
+        $('.meditateContainer, .iconContainer').fadeIn(500, () => {
+            $('.center').css({'animation-name': 'smallBreathIn', 'animation-play-state': 'running'});
+        });
+        $('.meditateContainer').css('display', 'flex');
+
+        // depending on if the user has visited the meditation section before or not
+        // show welcomeMessage or alreadyMeditated()
+        welcomeMessage();
+    }, 100);
+
+
+}
 function typedjs() {
 	$(".typed").typed({
 		strings: [
@@ -821,7 +865,7 @@ $(document).ready(() => {
 	let monthDaynum = moment().format('MMMM Do'); // May 15th
 	$('.date').html(`${day}, ${monthDaynum}`);
 
-	// ***MAIN BUTTONS***
+    // ---------------------- 3 MAIN BUTTONS LOGIC ----------------------------
 
 	// ***MOTIVATE LOGIC***
 	$('#motivateButton').on('click', () => {
@@ -858,24 +902,33 @@ $(document).ready(() => {
 	// ***MEDITATE LOGIC***
     $('#meditateButton').on('click', () => {
         $('.transitionContainer').css('display', 'block');
+        $('.eyeClosing').css('box-shadow', 'inset 0vw 0vw 0vw 0vw transparent');
+
+        ion.sound({
+            sounds: [
+                {
+                    name: "relaxing",
+                    volume: 1,
+                    preload: true
+                }
+            ],
+            volume: 0.7,
+            path: "./sounds/",
+            preload: true
+        });
+
         setTimeout(() => {
             let myTransitionEvent = whichTransitionEvent();
-            $('.eyeClosing').css('box-shadow', 'inset 0vw 0vw 0vw 0vw transparent');
-            $('.eyeClosing').css('transform', 'scale(1.2,1.2) translate(-25%, -27%)').css('box-shadow', 'inset 0vw 0vw 4vw 100vw black');
+            $('.eyeClosing').css('box-shadow', 'inset 0vw 0vw 4vw 100vw black'); //.css('transform', 'scale(1.2,1.2) translate(-25%, -27%)').
 
             $('.eyeClosing').one(myTransitionEvent, function(event) {
-                // when animation finishes do
-                console.log('done');
+                // when transition finishes do
+                startMeditation();
+                $('.transitionContainer').css('display', 'none');
+                $('.eyeClosing').css('box-shadow', 'inset 0vw 0vw 0vw 0vw transparent');
                 return;
             });
-        }, 10);
-
-
-        // trigger this after 5010 miliseconds. after animation is done.
-        // setTimeout(() => {
-        //     console.log('now');
-        // }, 5011);
-
+        }, 50);
     });
 
 	// ***FOOTER*** logout popup fadeIn and fadeOut
@@ -892,7 +945,8 @@ $(document).ready(() => {
             }
 		});
 	});
-    // ------------------------- DOM LOGIN LOGIC ----------------------------------
+
+    // ------------------------- DOM LOGIN LOGIC ------------------------------
 	// first time login message fade out and calling
 	$('.darkenBackground, #firstTimeClose').on('click', () => {
 		$('.darkenBackground, .welcomeMessage').fadeOut(500, () => {
@@ -1599,5 +1653,13 @@ $(document).ready(() => {
         $('.attached').fadeIn(200, () => {
             $('#todoInput').focus();
         });
+    });
+
+    // ----------------------- DOM MEDITATION LOGIC ---------------------------
+
+    // close meditation section
+    $('#closeMeditation').on('click', function() {
+        ion.sound.stop("relaxing");
+        $('section.meditate').fadeOut(500);
     });
 });

@@ -262,27 +262,27 @@ header {
     animation: load6 1.7s infinite ease, round 1.7s infinite ease, hue 60s infinite linear;;
   }
 
-  // typedjs classes
-  .typed {
-    position: absolute;
-    color: white;
-    width: 80vw;
-    margin: auto;
-    text-align: center;
-    bottom: 15vh;
-    font-size: 32px;
-  }
-  .typed-cursor{
-  	opacity: 1;
-  	-webkit-animation: blink 0.7s infinite;
-  	-moz-animation: blink 0.7s infinite;
-  	animation: blink 0.7s infinite;
-  }
-  .typed-fade-out{
-      opacity: 0;
-      animation: 0;
-      transition: opacity .25s;
-  }
+}
+// typedjs classes
+.typed {
+  position: absolute;
+  color: white;
+  width: 80vw;
+  margin: auto;
+  text-align: center;
+  bottom: 15vh;
+  font-size: 32px;
+}
+.typed-cursor{
+  opacity: 1;
+  -webkit-animation: blink 0.7s infinite;
+  -moz-animation: blink 0.7s infinite;
+  animation: blink 0.7s infinite;
+}
+.typed-fade-out{
+  opacity: 0;
+  animation: 0;
+  transition: opacity .25s;
 }
 // ----------------------------- CLOSE SPINNER --------------------------------
 
@@ -913,6 +913,84 @@ main {
     }
   }
 
+  section.meditate {
+    position: absolute;
+    display: none;
+    //display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    width: 100vw;
+    min-height: 100vh;
+    height: 100vh;
+    box-sizing: border-box;
+    top: -10vh;
+    left: 0;
+    right: 0;
+    background-color: black;
+
+    span.iconContainer {
+      position: absolute;
+      display: none;
+      top: 2vh;
+      right: 25px;
+      cursor: pointer;
+      font-size: 25px;
+      color: rgba(100, 100, 100, 0.8);
+      transition: color .2s ease;
+      &:hover {
+        color: rgba(255,255,255,1);
+      }
+    }
+
+    div.meditateContainer {
+      display: none;
+      min-width: 800px;
+      width: 90vw;
+      height: 90vh;
+
+      position: relative;
+
+      justify-content: center;
+      align-items: center;
+
+      div.message {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        height: 10vh;
+        top: 0;
+        right: 0;
+        left: 0;
+        margin: auto;
+
+        line-height: 30px;
+        transition: all 1s ease;
+
+        font-family: monospace;
+        font-weight: bold;
+        font-size: 18px;
+      }
+
+      .center { // white dot in the middle
+        background-color: white;
+        width: 8vh;
+        height: 8vh;
+        border-radius: 50%;
+        box-shadow: 0px 0px 133px 24px rgba(224,248,255,0.8);
+        animation-name: breathIn;
+        animation-duration: 5s;
+        animation-delay: 0s;
+        animation-play-state: paused;
+        animation-direction: alternate;
+
+        animation-iteration-count: 40;
+        animation-timing-function: ease-in-out;
+      }
+    }
+  }
+
   section.todoList {
     border: 1px solid rgba(255,255,255,0.1);
     display: none;
@@ -1209,31 +1287,23 @@ footer {
 .transitionContainer {
   display: none;
   position: absolute;
-  top: 0; right: 0; left: 0;
+  top: 0;
+  z-index: 6;
   width: 100vw;
   height: 100vh;
   background-color: transparent;
   overflow: hidden;
-  transition: all 4s ease;
 }
-
 .eyeClosing {
-  position: absolute;
-  z-index: 4;
-  top: -25vh;
-  right: 0; left: 0;
-  margin: auto;
   width: 400vw;
   box-sizing: content-box;
   background-color: transparent;
   height: 300vh;
   box-shadow: inset 0vw 0vw 0vw 0vw transparent;
-  transition: all 5s ease;
+  transition: all 4s ease;
   border: 1px solid transparent;
   border-radius: 50%;
-}
-.shadow {
-  box-shadow: inset 0vw 0vw 4vw 100vw black !important;
+  transform: scale(1.2,1.2) translate(-25%, -27%);
 }
 // --------------------------- CLOSE EYE CLOSING CSS --------------------------
 
@@ -1341,6 +1411,34 @@ footer {
 	50% { opacity:0; }
 	100% { opacity:1; }
 }
+  //meditate section animations
+@keyframes breathIn {
+  0% {
+    box-shadow: 0px 0px 133px 0px rgba(224,248,255,0.8);
+  }
+
+  85% {
+    box-shadow: 0px 0px 133px 100px rgba(224,248,255,0.8);
+  }
+
+  100% {
+    box-shadow: 0px 0px 133px 100px rgba(224,248,255,0.8);
+  }
+}
+@keyframes smallBreathIn {
+  0% {
+    box-shadow: 0px 0px 133px 0px rgba(224,248,255,0.8);
+  }
+
+  85% {
+    box-shadow: 0px 0px 133px 20px rgba(224,248,255,0.8);
+  }
+
+  100% {
+    box-shadow: 0px 0px 133px 20px rgba(224,248,255,0.8);
+  }
+}
+
 // ------------------------ CLOSE ANIMATION -----------------------------------
 
 
