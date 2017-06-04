@@ -242,7 +242,7 @@ function startMeditation() { //fadesIn the meditation section
         ion.sound.play("relaxing");
 
         $("#welcomeMessage").typed({
-            strings: [`Welcome, ${user.name}.`, "Since this is your first time here...^1000<br> I hereby welcome you warmly^1000 to the meditation center.", `Now, ${user.name}...^1000 Meditation can be a very powerful tool^1000 if used right.<br>^1000 It has been proven to be as effective as medication in the treatment of depression and bipolarity.`, `And if you thankfully do not suffer from those diseases,^1000<br> it channels your thoughts towards the potential that lies^500 within you.`,     `Meditation helps you reflect on the problems that you are currently facing in your life^1000<br>and makes it easier for you to find the solutions.`, "Together we can realize your full potential^1000<br>and gain control of your inner emotional well-being.", "Moreover, if you find inner peace^1000<br>it will positively reflect onto other aspects of your life.", "Relax^1000, focus on your breathing^1000<br>and firstly try to think about the things you are gratefull in this life.<br>^1000", `Let us start.`],
+            strings: [`Welcome, ${user.name}.`, "Since this is your first time here...^1000<br> I hereby welcome you warmly^1000 to the meditation center.", `Now, ${user.name}...^1000 Meditation can be a very powerful tool^1000 if used right.<br>^1000 It has been proven to be as effective as medication in the treatment of depression and bipolarity.`, `And if you thankfully do not suffer from those diseases,^1000<br> it channels your thoughts towards the potential that lies^500 within you.`,     `Meditation helps you reflect on the problems that you are currently facing in your life^1000<br>and makes it easier for you to find the solutions.`, "Together we can realize your full potential^1000<br>and gain control of your inner emotional well-being.", "Moreover, if you find inner peace^1000<br>it will positively reflect onto other aspects of your life.", "Relax^1000, focus on your breathing^1000<br>and firstly try to think about the things you are gratefull in this life.<br>^1000", `Now... ^2000 Try syncing your breathing with the glow of the circle.<br>^1000 Let us start.^1000`],
             typeSpeed: 10,
             startDelay: 2000,
             backDelay: 2000,
@@ -252,6 +252,11 @@ function startMeditation() { //fadesIn the meditation section
             showCursor: true,
             cursorChar: "",
             callback: () => {
+                let update = { firstMeditation: false };
+                chrome.storage.sync.set(update, function() {
+                    console.log('user was updated');
+                });
+
                 $('#welcomeMessage').fadeOut(500);
                 $('.center').css('animation-play-state', 'paused');
                 $('.center').css('animation-name', 'breathIn');
@@ -259,10 +264,8 @@ function startMeditation() { //fadesIn the meditation section
 
                 let animationEvent = whichAnimationEvent();
 
-				$('.center').one(animationEvent,
-					function(event) {
-                        $('.wellDone, .meditateIconContainer').fadeIn(500);
-					return;
+				$('.center').one(animationEvent, function(event) {
+                    $('.wellDone, .meditateIconContainer').fadeIn(2000);
 				});
             }
         });
@@ -270,6 +273,31 @@ function startMeditation() { //fadesIn the meditation section
     function alreadyMeditated() {
 
         ion.sound.play("relaxing");
+
+        $("#hasMeditated").typed({
+            strings: [`Welcome back, ${user.name}.`, `When meditating, try syncing your breathing with the glow of the circle.^1000`, `Also, try and make and effort to focus^1000<br> on the things that you are gratefull for.^1000`, `Let us start.^2000`],
+            typeSpeed: 10,
+            startDelay: 2000,
+            backDelay: 2000,
+            fadeOut: true,
+            fadeOutClass: 'typed-fade-out',
+            fadeOutSpeed: 1000,
+            showCursor: true,
+            cursorChar: "",
+            callback: () => {
+
+                $('#hasMeditated').fadeOut(500);
+                $('.center').css('animation-play-state', 'paused');
+                $('.center').css('animation-name', 'breathIn');
+                $('.center').css('animation-play-state', 'running');
+
+                let animationEvent = whichAnimationEvent();
+
+				$('.center').one(animationEvent, function(event) {
+                    $('.wellDone, .meditateIconContainer').fadeIn(2000);
+				});
+            }
+        });
     }
 
     $('section.meditate').css('display', 'flex');
@@ -295,9 +323,12 @@ function startMeditation() { //fadesIn the meditation section
 
         $('.meditateContainer').css('display', 'flex');
 
-        // depending on if the user has visited the meditation section before or not
-        // show welcomeMessage or alreadyMeditated()
-        welcomeMessage();
+        // depending on if the user has visited the meditation section before or not show welcomeMessage or alreadyMeditated()
+        if (user.firstMeditation) {
+            welcomeMessage();
+        } else if (!user.firstMeditation) {
+            alreadyMeditated();
+        }
     }, 100);
 
 
@@ -1592,11 +1623,12 @@ $(document).ready(() => {
 
             isOpen = false;
 
+            $('section.todoList').fadeIn(100);
+
             if ($('#todoInput').length ) {
                 console.log('bruh there is one there already');
                 return;
             }
-
 
             let myTodoTemplate = `
                 <div class="oneTodoTemplate attached">
@@ -1606,7 +1638,6 @@ $(document).ready(() => {
             $('.todosContainer').append(myTodoTemplate);
 
             $('.attached').fadeIn(400, () => {
-                $('section.todoList').fadeIn(100);
                 $('#todoInput').focus();
             });
         }
