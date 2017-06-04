@@ -79,7 +79,6 @@ select:-webkit-autofill:focus {
   width: 100vw;
   min-width: 900px;
 }
-
 .overlayPNG {
   display: none;
   position: absolute;
@@ -719,7 +718,7 @@ main {
         }
       }
 
-      .commentInput {
+      textarea.commentInput {
         resize: vertical;
         position: relative;
         top: 20px;
@@ -731,7 +730,7 @@ main {
         outline: none;
         border: 1px solid transparent;
         border-radius: 5px;
-        padding-top: 9px;
+        padding: 9px 9px 0px;
         transition: all .8s ease;
       }
 
@@ -943,6 +942,20 @@ main {
       }
     }
 
+    span.iconContainerLeft {
+      position: absolute;
+      display: none;
+      top: 2vh;
+      left: 25px;
+      cursor: pointer;
+      font-size: 25px;
+      color: rgba(100, 100, 100, 0.8);
+      transition: color .2s ease;
+      &:hover {
+        color: rgba(255,255,255,1);
+      }
+    }
+
     div.meditateContainer {
       display: none;
       min-width: 800px;
@@ -973,6 +986,11 @@ main {
         font-size: 18px;
       }
 
+      // message that appears after meditating
+      div.wellDone {
+        display: none;
+      }
+
       .center { // white dot in the middle
         background-color: white;
         width: 8vh;
@@ -987,6 +1005,39 @@ main {
 
         animation-iteration-count: 40;
         animation-timing-function: ease-in-out;
+      }
+
+
+      .meditateIconContainer {
+        display: none;
+        position: absolute;
+        bottom: 15vh;
+        color: white;
+        font-size: 44px;
+        cursor: pointer;
+        transition: color .5s ease;
+        &:hover {
+          color: gold;
+        }
+      }
+
+
+      //info styles .warning and .sponsor
+      .info {
+        width: 90vw;
+
+        position: absolute;
+        font-size: 16px;
+        color: rgba(200, 200, 200, 0.5);
+        bottom: 0;
+      }
+
+      div.warning {
+        display: none;
+      }
+
+      div.sponsor {
+        display: none;
       }
     }
   }

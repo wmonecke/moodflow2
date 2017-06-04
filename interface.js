@@ -256,6 +256,14 @@ function startMeditation() { //fadesIn the meditation section
                 $('.center').css('animation-play-state', 'paused');
                 $('.center').css('animation-name', 'breathIn');
                 $('.center').css('animation-play-state', 'running');
+
+                let animationEvent = whichAnimationEvent();
+
+				$('.center').one(animationEvent,
+					function(event) {
+                        $('.wellDone, .meditateIconContainer').fadeIn(500);
+					return;
+				});
             }
         });
     }
@@ -264,12 +272,27 @@ function startMeditation() { //fadesIn the meditation section
         ion.sound.play("relaxing");
     }
 
-
     $('section.meditate').css('display', 'flex');
+
+    // handle warning and sponsor messages
+    $('.warning').fadeIn(500);
     setTimeout(() => {
-        $('.meditateContainer, .iconContainer').fadeIn(500, () => {
+        $('.warning').fadeOut(500, () => {
+            setTimeout(() => {
+                $('.sponsor').fadeIn(500, () => {
+                    setTimeout(() => {
+                        $('.sponsor').fadeOut(500);
+                    }, 4000);
+                });
+            }, 1000);
+        });
+    }, 4000);
+
+    setTimeout(() => {
+        $('.meditateContainer, .iconContainer, .iconContainerLeft').fadeIn(500, () => {
             $('.center').css({'animation-name': 'smallBreathIn', 'animation-play-state': 'running'});
         });
+
         $('.meditateContainer').css('display', 'flex');
 
         // depending on if the user has visited the meditation section before or not
@@ -780,7 +803,7 @@ function renderDashboard(emitter) {
         return;
     }
 
-	// searchbar
+	// searchbar option
 	if (user.searchbar === true) {
 		$('.googleSearch').css('display', 'block');
 		$('input.searchbar').attr('checked', true);
@@ -788,6 +811,19 @@ function renderDashboard(emitter) {
 		$('.googleSearch').css('display', 'none');
 		$('input.searchbar').attr('checked', false);
 	}
+
+    // leave Background option
+    if (user.leaveBackground === true) {
+        $('#leaveBackgroundOn').attr('checked', true);
+
+        $('.backgroundFrequencyContainer').css({
+            'text-decoration': 'line-through',
+            'color': 'rgba(197,197,197,0.5)',
+            'pointer-events': 'none'
+        });
+    } else if (user.searchbar === false) {
+        $('#leaveBackgroundOn').attr('checked', false);
+    }
 
     // frequency in options menu
 	switch(frequencyNumber) {
@@ -818,6 +854,7 @@ function renderDashboard(emitter) {
 			default:
 
 	}
+
 
     // users name in moodflow input
     $('.moodInputGreeting').html(`Good day, ${user.name}.`);
@@ -1221,7 +1258,7 @@ $(document).ready(() => {
             chrome.storage.sync.set(moodContainer, function() {
                 console.log('moodContainer was saved');
 
-                chrome.alarms.create('downloadNewBackground', {
+                chrome.alarms.create('backgroundCheck', {
     				delayInMinutes: 480,
     				periodInMinutes: 480
     			});
@@ -1511,12 +1548,38 @@ $(document).ready(() => {
     });
 
     // leave current Background on
-    $('#leaveBackgroundOn').on('click', function () {
+    $('#leaveBackgroundOn').on('click', function() {
         if (user.leaveBackground) {
-            console.log('true')
-        } else if (!user.leaveBackground) {
-            console.log('false');
+            let update = { leaveBackground: false};
+            chrome.storage.sync.set(update, function() {
+                console.log('now false');
 
+                $('.backgroundFrequencyContainer').css({
+                    'text-decoration': 'none',
+                    'color': 'white',
+                    'pointer-events': 'auto'
+                });
+                chrome.storage.sync.get(user, function(foundUser) {
+                    user = foundUser;
+                });
+            });
+
+        } else if (!user.leaveBackground) {
+
+            let update2 = { leaveBackground: true};
+            chrome.storage.sync.set(update2, function() {
+                console.log('now true');
+
+                $('.backgroundFrequencyContainer').css({
+                    'text-decoration': 'line-through',
+                    'color': 'rgba(197,197,197,0.5)',
+                    'pointer-events': 'none'
+                });
+
+                chrome.storage.sync.get(user, function(foundUser) {
+                    user = foundUser;
+                });
+            });
         }
     });
 
@@ -1543,6 +1606,7 @@ $(document).ready(() => {
             $('.todosContainer').append(myTodoTemplate);
 
             $('.attached').fadeIn(400, () => {
+                $('section.todoList').fadeIn(100);
                 $('#todoInput').focus();
             });
         }
@@ -1669,8 +1733,14 @@ $(document).ready(() => {
     // ----------------------- DOM MEDITATION LOGIC ---------------------------
 
     // close meditation section
-    $('#closeMeditation').on('click', function() {
+    $('#closeMeditation, .meditateIconContainer').on('click', function() {
         ion.sound.stop("relaxing");
         $('section.meditate').fadeOut(500);
+    });
+
+    // mute volume
+    $('#volumeOff').on('click', function() {
+        ion.sound.stop("relaxing");
+        $(this).fadeOut(500);
     });
 });
