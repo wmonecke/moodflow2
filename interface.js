@@ -75,6 +75,7 @@ function User(
     this.currentMonth      = new Date().getMonth();
 	this.firstMeditation   = true;
     this.leaveTodolistOpen = false;
+    this.leaveBackground   = false;
     this.todo              = {};
 	this.background = {
 		// times that a background should change in a day.
@@ -1506,6 +1507,16 @@ $(document).ready(() => {
                     });
                 });
             });
+        }
+    });
+
+    // leave current Background on
+    $('#leaveBackgroundOn').on('click', function () {
+        if (user.leaveBackground) {
+            console.log('true')
+        } else if (!user.leaveBackground) {
+            console.log('false');
+
         }
     });
 
