@@ -216,6 +216,7 @@
       </section>
 
       <!-- Motivational video iframe and background -->
+      <div class="notOnline"></div>
       <div class="closeiframe">
         <div class="myQuote">
           “ People often say that motivation doesn't last. <br> Well, neither does bathing - that's why we recommend it daily. ”<br> Zig Ziglar
@@ -229,8 +230,6 @@
               src=""
               frameborder="0"
               allowfullscreen>
-
-
       </iframe>
     </main>
 <!-- CLOSE MAIN CONTENT ------------------------------------------------------->
@@ -242,22 +241,27 @@
 
       <div class="logoutpopup">
 
+        <div class="backgroundFrequencyContainer container">
+            <label for="backgroundFrequency"> Background change:</label>
+            <span class="spanContainer">
+                <span  id="frequencyNumber" class="number"></span> &nbsp;
+                <span  class="arrows arrowUp">
+                    <i id="moreBackground" class="ion-arrow-up-c"></i>
+                </span> &nbsp;
+                <span class="arrows arrowDown">
+                    <i id="lessBackground" class="ion-arrow-down-c"></i>
+                </span>
+            </span>
+        </div>
+
         <div class="leaveBackgroundOn container">
           <label for="leaveBackgroundOn">Do not change the current background: </label>
           <input id="leaveBackgroundOn" type="checkbox">
         </div>
 
-        <div class="backgroundFrequencyContainer container">
-          <label for="backgroundFrequency"> Background change:</label>
-          <span class="spanContainer">
-            <span  id="frequencyNumber" class="number"></span> &nbsp;
-            <span  class="arrows arrowUp">
-              <i id="moreBackground" class="ion-arrow-up-c"></i>
-            </span> &nbsp;
-            <span class="arrows arrowDown">
-              <i id="lessBackground" class="ion-arrow-down-c"></i>
-            </span>
-          </span>
+        <div class="superCleanMode container">
+            <label for="superCleanMode">Extra-clean mode: </label>
+            <input class="cleanMode" id="superCleanMode" type="checkbox">
         </div>
 
         <div class="searchbarContainer container">
@@ -265,10 +269,27 @@
           <input class="searchbar" id="searchbar" type="checkbox" checked name="searchbar">
         </div>
 
+        <div class="todolistContainer container">
+          <label class="todolist" for="todolist">To-do list:&nbsp;</label>
+          <input class="todolist" id="todolist" type="checkbox" checked>
+        </div>
+
         <div class="logoutContainer container">
           <label class="move logoutbutton">Log Out</label>
         </div>
+
       </div>
+
+
+
+
+      <section class="landscapeButtons">
+        <div class="container">
+          <button id="meditateButton2"  data-balloon-length="medium" data-balloon="...and reduce stress & anxiety in a 5 min. session" data-balloon-pos="up" type="button" name="button">Meditate</button>
+          <button id="reflectButton2"   data-balloon-length="medium" data-balloon="...and get insight into what really makes you happy :)" data-balloon-pos="up" type="button" name="button">Reflect</button>
+          <button id="motivateButton2"  data-balloon-length="medium" data-balloon="...and get your daily dose of inspiration." data-balloon-pos="up" type="button" name="button">Motivate</button>
+        </div>
+      </section>
 
       <section class="todoListButton">
         <i id="openTodolist" class="icon ion-plus"></i>
@@ -278,6 +299,7 @@
         <p id="picLocation"></p>
         <p id="picAuthor"></p>
       </section>
+
     </footer>
 <!-- CLOSE FOOTER ------------------------------------------------------------->
 

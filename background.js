@@ -43,7 +43,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
 
 	// if changeFrequency was not changed by the user then return
-	if (changes.background.newValue.backgroundChangeFrequency === undefined) {
+	if (changes.background === undefined) {
 		console.log('changeFrequency is undefined');
 		return;
 	}
@@ -145,7 +145,7 @@ function jic(source_img_obj, quality, output_format) {
 }
 
 function createAlarm(changeFrequency) {
-    console.log('within createAlarm()');
+    console.log('within createAlarm() and creating an alarm');
 
     // depending on the new changeFrequency set up a new alarm
     if (changeFrequency === 1) {

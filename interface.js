@@ -32,6 +32,7 @@ function bootstrapApp() {
 		// for example it is in charge of displaying the users name, searchbar or quotes
         checkIfMoodsShouldReset();
 		renderDashboard();
+        renderNormalTodo();
 		//formatDataForChart();
 		return;
 	});
@@ -75,6 +76,7 @@ function User(
     this.currentMonth      = new Date().getMonth();
 	this.firstMeditation   = true;
     this.leaveTodolistOpen = false;
+    this.cleanMode         = false;
     this.leaveBackground   = false;
     this.todo              = {};
 	this.background = {
@@ -610,6 +612,11 @@ function renderNormalTodo() { // being called within render dashboard
     if ($.isEmptyObject(user.todo)) {
         console.log('obejct is empty');
 
+        if ($('#todoInput').length ) {
+            console.log('bruh there is one there already');
+            return;
+        }
+
         let myTodoTemplate = `
             <div class="oneTodoTemplate attached">
                 <textarea id="todoInput" name="name" placeholder="what shall be done?" rows="1" cols="80"></textarea>
@@ -807,99 +814,137 @@ function checkIfMoodsShouldReset() { // this function checks if is the end of th
 }
 // called after getting user
 function renderDashboard(emitter) {
-	$('.greeting').html(`Good day, ${user.name}.`);
 
-    let todayAsAString = today.toString();
+    chrome.storage.sync.get(user, function(foundUser){
+        user = foundUser;
 
-    if (user[todayAsAString] === undefined) {
-        console.log('undefined');
-    } else if (user[todayAsAString].moodValue === '' || undefined) {
-        $('section.dashboard').css('display', 'none');
-        $('section.moodInput').css('display', 'block');
-    }
-    // if (user[todayAsAString].moodValue === '' || undefined) {
-    //     $('section.dashboard').css('display', 'none');
-    //     $('section.moodInput').css('display', 'block');
-    // }
 
-	// background frequency
-	let frequencyNumber = user.background.backgroundChangeFrequency;
+        $('.greeting').html(`Good day, ${user.name}.`);
 
-    // if emitter === 1 then function jis being called after user has signed up
-    if (emitter === 1) {
-        $('.googleSearch').fadeIn(2000);
-		$('#frequencyNumber').html('every 8 hours');
-        $('#reflectButton').css('display', 'none');
-        var isOpen = false;
-        return;
-    }
+        let todayAsAString = today.toString();
 
-	// searchbar option
-	if (user.searchbar === true) {
-		$('.googleSearch').css('display', 'block');
-		$('input.searchbar').attr('checked', true);
-	} else if (user.searchbar === false) {
-		$('.googleSearch').css('display', 'none');
-		$('input.searchbar').attr('checked', false);
-	}
+        if (user[todayAsAString] === undefined) {
+            console.log('undefined');
+        } else if (user[todayAsAString].moodValue === '' || undefined) {
+            $('section.dashboard').css('display', 'none');
+            $('section.moodInput').css('display', 'block');
+        }
 
-    // leave Background option
-    if (user.leaveBackground === true) {
-        $('#leaveBackgroundOn').attr('checked', true);
+        // background frequency
+        let frequencyNumber = user.background.backgroundChangeFrequency;
 
-        $('.backgroundFrequencyContainer').css({
-            'text-decoration': 'line-through',
-            'color': 'rgba(197,197,197,0.5)',
-            'pointer-events': 'none'
-        });
-    } else if (user.searchbar === false) {
-        $('#leaveBackgroundOn').attr('checked', false);
-    }
+        // if emitter === 1 then function jis being called after user has signed up
+        if (emitter === 1) {
+            $('.googleSearch').fadeIn(2000);
+            $('#frequencyNumber').html('every 8 hours');
+            $('#reflectButton').css('display', 'none');
+            var isOpen = false;
+            return;
+        }
 
-    // frequency in options menu
-	switch(frequencyNumber) {
-			case 1:
-				$('#frequencyNumber').html('once a day');
-			    break;
-			case 3:
-				$('#frequencyNumber').html('every 8 hours');
-                break;
-			case 5:
-			    $('#frequencyNumber').html('every 5 hours');
-			    break;
-			case 8:
-			    $('#frequencyNumber').html('every 3 hours');
-			    break;
-			case 12:
-			    $('#frequencyNumber').html('every 2 hours');
-				break;
-			case 24:
-                $('#frequencyNumber').html('every hour');
-                break;
-			case 48:
-				$('#frequencyNumber').html('every 30 minutes');
-				break;
+        // searchbar option
+        if (user.searchbar === true) {
+            $('.googleSearch').css('display', 'block');
+            $('input.searchbar').attr('checked', true);
+        } else if (user.searchbar === false) {
+            $('.googleSearch').css('display', 'none');
+            $('input.searchbar').attr('checked', false);
+        }
+
+        // todolist option
+        if (user.todolist === true) {
+            $('section.todoListButton').css('display', 'block');
+            $('input.todolist').attr('checked', true);
+        } else if (user.todolist === false) {
+            $('section.todoListButton').css('display', 'none');
+            $('input.todolist').attr('checked', false);
+        }
+
+        // clean mode
+        if (user.cleanMode === true) {
+            $('section.dashboard').css('display', 'none');
+            $('section.landscapeButtons').css('display', 'flex');
+            $('input.cleanMode').attr('checked', true);
+        } else if (user.cleanMode === false) {
+            $('section.dashboard').css('display', 'block');
+            $('input.cleanMode').attr('checked', false);
+        }
+
+        // leave Background option
+        if (user.leaveBackground === true) {
+            $('#leaveBackgroundOn').attr('checked', true);
+
+            $('.backgroundFrequencyContainer').css({
+                'text-decoration': 'line-through',
+                'color': 'rgba(197,197,197,0.5)',
+                'pointer-events': 'none'
+            });
+        } else if (user.searchbar === false) {
+            $('#leaveBackgroundOn').attr('checked', false);
+        }
+
+        // frequency in options menu
+        switch(frequencyNumber) {
+            case 1:
+            $('#frequencyNumber').html('once a day');
+            break;
+            case 3:
+            $('#frequencyNumber').html('every 8 hours');
+            break;
+            case 5:
+            $('#frequencyNumber').html('every 5 hours');
+            break;
+            case 8:
+            $('#frequencyNumber').html('every 3 hours');
+            break;
+            case 12:
+            $('#frequencyNumber').html('every 2 hours');
+            break;
+            case 24:
+            $('#frequencyNumber').html('every hour');
+            break;
+            case 48:
+            $('#frequencyNumber').html('every 30 minutes');
+            break;
             case 96:
-                $('#frequencyNumber').html('every 15 minutes');
-                break;
-			default:
+            $('#frequencyNumber').html('every 15 minutes');
+            break;
+            default:
 
-	}
+        }
 
 
-    // users name in moodflow input
-    $('.moodInputGreeting').html(`Good day, ${user.name}.`);
-    formatDataForChart();
-    renderNormalTodo();
+        // users name in moodflow input
+        $('.moodInputGreeting').html(`Good day, ${user.name}.`);
+        formatDataForChart();
+
+    });
 }
 function injectYTVideo() {
+	let online = window.navigator.onLine;
+
 	var videos = ['https://www.youtube.com/embed/SuPLxQD4akQ?autoplay=1', 'https://www.youtube.com/embed/26U_seo0a1g?autoplay=1', 'https://www.youtube.com/embed/Yb-OYmHVchQ?autoplay=1', 'https://www.youtube.com/embed/K2bw52VjJLM?autoplay=1', 'https://www.youtube.com/embed/eRaTpTVTENU?autoplay=1', 'https://www.youtube.com/embed/2_fDhqRk_Ro?autoplay=1', 'https://www.youtube.com/embed/DvtxOzO6OAE?autoplay=1', 'https://www.youtube.com/embed/D_Vg4uyYwEk?autoplay=1',
 		'https://www.youtube.com/embed/KHaooRlwtzI?autoplay=1', 'https://www.youtube.com/embed/lY7Mf6PzZyA?autoplay=1', 'https://www.youtube.com/embed/zCyB2DQFdA0?autoplay=1', 'https://www.youtube.com/embed/z1PSbDmV8Gw?autoplay=1', 'https://www.youtube.com/embed/H1sXTmaqRHU?autoplay=1'
 	];
 
+	if (online) {
+		$('.myQuote').fadeIn(2000);
+		setTimeout(() => {
+				$('.myQuote').fadeOut(500);
+		}, 7000);
 
-	let oneVid = videos[Math.floor(Math.random() * videos.length)];
-	$('.myiframe').attr("src", oneVid);
+
+		let oneVid = videos[Math.floor(Math.random() * videos.length)];
+		$('.myiframe').attr("src", oneVid);
+	} else {
+		$('.notOnline').html(`${user.name}, it appears that you are currently not online.<br>Check your internet connection and try again.`).fadeIn(500).css('display', 'flex');
+
+		setTimeout(() => {
+			$('.notOnline, .closeiframe, .myiframe').fadeOut(500);
+
+			$('.headerContainer, footer').fadeIn(500);
+		}, 4000);
+	}
 }
 // ------------------------- JQUERY DOM EVENTS LOGIC --------------------------
 $(document).ready(() => {
@@ -937,11 +982,8 @@ $(document).ready(() => {
     // ---------------------- 3 MAIN BUTTONS LOGIC ----------------------------
 
 	// ***MOTIVATE LOGIC***
-	$('#motivateButton').on('click', () => {
-        $('.myQuote').fadeIn(2000);
-        setTimeout(() => {
-            $('.myQuote').fadeOut(500);
-        }, 7000);
+	$('#motivateButton, #motivateButton2').on('click', () => {
+
         $('.headerContainer, footer').fadeOut(500);
         $('section.todoList').fadeOut(500);
 		injectYTVideo();
@@ -960,7 +1002,7 @@ $(document).ready(() => {
 	});
 
 	// ***REFLECT LOGIC***
-	$('#reflectButton').on('click', () => {
+	$('#reflectButton, #reflectButton2').on('click', () => {
         $('section.todoList').fadeOut(500);
         $('.tooltipContainer').css('display', 'none');
 		$('.dashboard').fadeOut(500, () => {
@@ -969,7 +1011,7 @@ $(document).ready(() => {
 	});
 
 	// ***MEDITATE LOGIC***
-    $('#meditateButton').on('click', () => {
+    $('#meditateButton, #meditateButton2').on('click', () => {
         $('.transitionContainer').css('display', 'block');
         $('.eyeClosing').css('box-shadow', 'inset 0vw 0vw 0vw 0vw transparent');
 
@@ -1390,10 +1432,12 @@ $(document).ready(() => {
 
             $('.yourMoodflow').removeClass('makeSpanTransparent');
             $('div.headerContainer, footer, section.dashboard').fadeIn(500);
+
             if (isOpen) {
                 $('section.todoList').fadeIn(300);
             }
 
+            renderDashboard();
         });
     });
 
@@ -1416,6 +1460,53 @@ $(document).ready(() => {
 			});
 		}
 	});
+
+    // todolist
+    $('input.todolist').on('click', function() {
+		let checked = $(this).prop('checked');
+
+        console.log('checked', checked);
+
+		if (checked === true) {
+			$('section.todoListButton').fadeIn(500);
+            isOpen = false;
+
+			chrome.storage.sync.set({ "todolist": true }, function() {
+				console.log('todolist to true');
+			});
+		} else if (checked === false) {
+			$('section.todoListButton, section.todoList').fadeOut(500);
+            isOpen = false;
+
+			chrome.storage.sync.set({ "todolist": false, "leaveTodolistOpen": false }, function() {
+				console.log('searchbar to false');
+			});
+		}
+	});
+
+    // clean mode
+    $('input#superCleanMode').on('click', function() {
+        let checked = $(this).prop('checked');
+
+        if (checked === true) {
+
+            $('section.dashboard').fadeOut(500);
+            $('section.landscapeButtons').fadeIn(500).css('display', 'flex');
+
+			chrome.storage.sync.set({ "cleanMode": true }, function() {
+				console.log('cleanMode to true');
+			});
+		} else if (checked === false) {
+
+            $('section.dashboard').fadeIn(500);
+            $('section.landscapeButtons').fadeOut(500);
+
+
+			chrome.storage.sync.set({ "cleanMode": false }, function() {
+				console.log('cleanMode to false');
+			});
+		}
+    });
 
 	// background change frequency
 	$('#moreBackground').on('click', function() {
@@ -1766,7 +1857,10 @@ $(document).ready(() => {
     // close meditation section
     $('#closeMeditation, .meditateIconContainer').on('click', function() {
         ion.sound.stop("relaxing");
-        $('section.meditate').fadeOut(500);
+        $('section.meditate').fadeOut(500, () => {
+            $('section.meditate, .meditateContainer, .info').css('display', 'none');
+        });
+        renderDashboard();
     });
 
     // mute volume

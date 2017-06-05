@@ -1159,6 +1159,23 @@ main {
     }
   }
 
+  // Motivational videos
+  .notOnline {
+    position: absolute;
+    z-index: 6;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 700px;
+    height: 240px;
+    background-color: black;
+
+    line-height: 29px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 19px;
+  }
   .closeiframe {
     position: absolute;
     top: -10vh;
@@ -1207,6 +1224,7 @@ main {
 
 // ------------------------------- FOOTER -------------------------------------
 footer {
+
   min-width: 950px !important;
   height: 10vh;
   position: relative;
@@ -1290,6 +1308,45 @@ footer {
         cursor: pointer;
       }
     }
+  }
+
+  section.landscapeButtons {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+
+    //display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 500px;
+    height: 10vh;
+
+    button {
+      width: 60px;
+      height: 32px;
+      margin: 0 25px;
+      font-size: 14px;
+      font-weight: 100;
+      border-radius: 4px;
+
+      outline: none;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.5);
+      background-color: rgba(0,0,0,0.05);
+      border: 1px solid transparent;
+      transition: all .2s ease;
+      &:hover {
+        transform: scale(1.1, 1.1);
+        background-color: gold;
+        border: 1px solid gold;
+        color: black;
+      }
+    }
+
   }
 
   section.todoListButton {
