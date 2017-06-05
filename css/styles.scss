@@ -826,7 +826,7 @@ main {
         height: 200px;
         width: 500px;
         padding: 15px;
-        background-color: rgba(0,0,0,0.2);
+        background-color: rgba(0,0,0,0.5);
         border-radius: 3px;
         box-sizing: border-box;
         border: 1px solid rgba(255,255,255,0.1);
@@ -855,7 +855,7 @@ main {
 
         .myComment {
           font-size: 16px;
-          text-align: justify;
+          text-align: left;
           height: 130px;
           width: 470px;
           box-sizing: border-box;
