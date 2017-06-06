@@ -31,7 +31,7 @@ function bootstrapApp() {
 		// this function is in charge of displaying stuff in the dashboard
 		// for example it is in charge of displaying the users name, searchbar or quotes
         checkIfMoodsShouldReset();
-		renderDashboard();
+        renderDashboard();
         renderNormalTodo();
 		//formatDataForChart();
 		return;
@@ -817,7 +817,7 @@ function renderDashboard(emitter) {
 
     chrome.storage.sync.get(user, function(foundUser){
         user = foundUser;
-
+        var skip;
 
         $('.greeting').html(`Good day, ${user.name}.`);
 
@@ -826,8 +826,11 @@ function renderDashboard(emitter) {
         if (user[todayAsAString] === undefined) {
             console.log('undefined');
         } else if (user[todayAsAString].moodValue === '' || undefined) {
-            $('section.dashboard').css('display', 'none');
+            console.log('user[todayAsAString] in hereeee!!!');
             $('section.moodInput').css('display', 'block');
+            $('section.dashboard').css('display', 'none');
+
+            skip = true;
         }
 
         // background frequency
@@ -866,8 +869,12 @@ function renderDashboard(emitter) {
             $('section.landscapeButtons').css('display', 'flex');
             $('input.cleanMode').attr('checked', true);
         } else if (user.cleanMode === false) {
-            $('section.dashboard').css('display', 'block');
             $('input.cleanMode').attr('checked', false);
+            $('section.dashboard').css('display', 'block');
+
+            if (skip === true) {
+                $('section.dashboard').css('display', 'none');
+            }
         }
 
         // leave Background option
