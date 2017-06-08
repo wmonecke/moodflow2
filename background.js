@@ -97,7 +97,7 @@ function compressImageAndSave() {
 	let compressedSRC;
 
 	//An Integer from 0 to 100
-	let quality = 40;
+	let quality = 34;
 	// output file format (jpg || png)
 	let output_format = 'jpg';
 	//This function returns an Image Object

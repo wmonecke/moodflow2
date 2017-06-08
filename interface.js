@@ -5,6 +5,7 @@ if(location.search !== "?foo") {
     throw new Error();  // load everything on the next page;                // stop execution on this page
 }
 
+var isOpen = false;
 var user = {};
 var savedBackground = {};
 var _now = new Date();
@@ -27,7 +28,6 @@ function bootstrapApp() {
 
 		user = foundUser;
 
-
 		// this function is in charge of displaying stuff in the dashboard
 		// for example it is in charge of displaying the users name, searchbar or quotes
         checkIfMoodsShouldReset();
@@ -42,7 +42,6 @@ function bootstrapApp() {
 		savedBackground = foundBackground;
 
 		if (foundBackground.dataURL === undefined || '') {
-
 			$('.spinnerContainer').css('display', 'flex');
 			getBackgroundAPI();
 			return;
@@ -123,21 +122,18 @@ function base64ToImgAndDisplay() { // gets compressed base64 and backgroundImage
 	var savedBackground;
 	chrome.storage.local.get(savedBackground, function(foundBackground) {
 
+        console.log('foundBackground', foundBackground);
 		$('#background').on('load', function() {
-			$('body, .background').fadeIn(400);
+			$('body, .background').fadeIn(350);
 		}).attr('src', foundBackground.dataURL);
-	});
 
-	let backgroundInfo;
-	chrome.storage.local.get(backgroundInfo, function(foundBackgroundInfo) {
-
-		if (foundBackgroundInfo.location === undefined) {
-			$('#picLocation').html('Planet Earth');
-			$('#picAuthor').html(`Photo: <a style="color: rgba(255, 255, 255, 0.8);" class="myAnchor" href="${foundBackgroundInfo.user.links.html}?utm_source=moodflow&utm_medium=referral&utm_campaign=api-credit">${foundBackgroundInfo.user.name}</a> / <a class="myAnchor" style="color: rgba(255, 255, 255, 0.8);" href="https://unsplash.com/">Unsplash</a>`);
-		} else {
-			$('#picLocation').html(foundBackgroundInfo.location.title);
-			$('#picAuthor').html(`Photo: <a class="myAnchor" style="color: rgba(255, 255, 255, 0.8);" href="${foundBackgroundInfo.user.links.html}?utm_source=moodflow&utm_medium=referral&utm_campaign=api-credit">${foundBackgroundInfo.user.name}</a> / <a style="color: rgba(255, 255, 255, 0.8);" class="myAnchor" href="https://unsplash.com/">Unsplash</a>`);
-		}
+        if (foundBackground.location === undefined) {
+            $('#picLocation').html('Planet Earth');
+            $('#picAuthor').html(`Photo: <a style="color: rgba(255, 255, 255, 0.8);" class="myAnchor" href="${foundBackground.user.links.html}?utm_source=moodflow&utm_medium=referral&utm_campaign=api-credit">${foundBackground.user.name}</a> / <a class="myAnchor" style="color: rgba(255, 255, 255, 0.8);" href="https://unsplash.com/">Unsplash</a>`);
+        } else {
+            $('#picLocation').html(foundBackground.location.title);
+            $('#picAuthor').html(`Photo: <a class="myAnchor" style="color: rgba(255, 255, 255, 0.8);" href="${foundBackground.user.links.html}?utm_source=moodflow&utm_medium=referral&utm_campaign=api-credit">${foundBackground.user.name}</a> / <a style="color: rgba(255, 255, 255, 0.8);" class="myAnchor" href="https://unsplash.com/">Unsplash</a>`);
+        }
 	});
 }
 function getBackgroundAPI(frequencyEmitter) { // AJAX Unsplash API --> compressImageAndSave()
@@ -200,7 +196,7 @@ function compressImageAndSave(frequencyEmitter) {
 	let compressedSRC;
 
 	//An Integer from 0 to 100
-	let quality = 40;
+	let quality = 30;
 	// output file format (jpg || png)
 	let output_format = 'jpg';
 	//This function returns an Image Object
@@ -606,7 +602,7 @@ function renderNormalTodo() { // being called within render dashboard
 
     if (user.leaveTodolistOpen) {
         $('section.todoList').css('display', 'block');
-        var isOpen = true;
+        isOpen = true;
     }
 
     if ($.isEmptyObject(user.todo)) {
@@ -816,8 +812,9 @@ function checkIfMoodsShouldReset() { // this function checks if is the end of th
 function renderDashboard(emitter) {
 
     chrome.storage.sync.get(user, function(foundUser){
-        user = foundUser;
         var skip;
+
+        user = foundUser;
 
         $('.greeting').html(`Good day, ${user.name}.`);
 
@@ -841,7 +838,7 @@ function renderDashboard(emitter) {
             $('.googleSearch').fadeIn(2000);
             $('#frequencyNumber').html('every 8 hours');
             $('#reflectButton').css('display', 'none');
-            var isOpen = false;
+            isOpen = false;
             return;
         }
 
@@ -924,7 +921,6 @@ function renderDashboard(emitter) {
         // users name in moodflow input
         $('.moodInputGreeting').html(`Good day, ${user.name}.`);
         formatDataForChart();
-
     });
 }
 function injectYTVideo() {
@@ -955,8 +951,8 @@ function injectYTVideo() {
 }
 // ------------------------- JQUERY DOM EVENTS LOGIC --------------------------
 $(document).ready(() => {
+    console.log('document is ready and isOpen:', isOpen);
 
-    let isOpen = user.leaveTodolistOpen;
 	// ------------------------ DASHBOARD LOGIC -----------------------------------
 	// ***HEADER*** google searchbar animation and palceholder logic
 	$('#placeholder').on('click', () => {
@@ -1438,7 +1434,15 @@ $(document).ready(() => {
         $('section.chart').fadeOut(500, () => {
 
             $('.yourMoodflow').removeClass('makeSpanTransparent');
-            $('div.headerContainer, footer, section.dashboard').fadeIn(500);
+
+            console.log('user.cleanMode', user.cleanMode);
+
+            if (user.cleanMode === false) {
+                $('section.dashboard').fadeIn(500);
+            }
+
+            $('div.headerContainer, footer').fadeIn(500);
+
 
             if (isOpen) {
                 $('section.todoList').fadeIn(300);
@@ -1716,9 +1720,10 @@ $(document).ready(() => {
 
     $('#openTodolist').on('click', () => {
         $('.logoutpopup').fadeOut(300);
+        console.log('isOpen on click:', isOpen);
 
         if (isOpen === undefined) {
-
+            console.log('isOpen was undeinfed, now in that if statement');
             isOpen = false;
 
             $('section.todoList').fadeIn(100);
@@ -1738,6 +1743,8 @@ $(document).ready(() => {
             $('.attached').fadeIn(400, () => {
                 $('#todoInput').focus();
             });
+
+            return;
         }
 
         if (isOpen === false) {
@@ -1751,6 +1758,7 @@ $(document).ready(() => {
                 console.log('successful update');
                 isOpen = true;
             });
+
         } else if (isOpen === true) {
             console.log('now closing');
             $('section.todoList').fadeOut(100);
