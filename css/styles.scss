@@ -110,6 +110,7 @@ select:-webkit-autofill:focus {
 
 // ----------------------------------- HEADER ---------------------------------
 header {
+  border: 1px solid red;
   min-width: 950px !important;
   height: 10vh;
   box-sizing: border-box;
@@ -144,6 +145,7 @@ header {
 
 
   section.googleSearch {
+
     min-width: 950px !important;
     width: 100vw;
 
@@ -154,18 +156,9 @@ header {
     margin: auto;
 
     form.myGoogleSearchForm {
+
       position: relative;
       margin: auto;
-
-      i.ion-ios-search-strong {
-        position: absolute;
-        z-index: -1;
-        top: 1.5vh;
-        font-size: 20px;
-        color: rgba(255, 255, 255, 0.8);
-        transition: all 1s ease;
-      }
-
 
       input[type="text"] {
         padding: 6px;
@@ -181,6 +174,7 @@ header {
         transition: background-color .5s ease, width .5s ease;
         width: 200px;
 
+
         &::-webkit-input-placeholder {
           color: rgba(255,255,255,0.4);
           font-size: 16px;
@@ -190,6 +184,16 @@ header {
           background-color: rgba(0,0,0,0.2);
           width: 310px;
         }
+      }
+
+      i.ion-ios-search-strong {
+        position: absolute;
+
+        z-index: -1;
+        top: 10px;
+        font-size: 20px;
+        color: rgba(255, 255, 255, 0.8);
+        transition: all 1s ease;
       }
     }
   }
@@ -539,16 +543,18 @@ main {
     text-shadow: 1px 1px 1px rgba(100, 100, 100, 0.6);
 
     div.container {
+      border: 1px solid blue;
       min-width: 1000px;
       position: relative;
       top: 40px;
       box-sizing: border-box;
       margin: auto;
       height: 200px;
-      width: 500px;
+
 
       h4 {
-        width: 900px;
+        border: 1px solid red;
+
         height: 100px;
         margin: auto;
 
@@ -556,6 +562,7 @@ main {
         text-align: center;
         position: relative;
         font-weight: bold;
+
         font-size: 64px;
         letter-spacing: -1px;
       }
@@ -621,6 +628,7 @@ main {
         box-sizing: border-box;
         text-align: center;
         font-weight: bold;
+
         font-size: 64px;
         letter-spacing: -1px;
       }
@@ -1054,11 +1062,14 @@ main {
     width: 300px;
 
     padding: 5px;
-    //border: 1px solid blue;
+    border: 1px solid lightblue;
     border-radius: 4px;
     box-sizing: border-box;
     background-color: rgba(0,0,0,0.4);
     transition: all .5s ease;
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     div.container {
       //border: 1px solid gold;
@@ -1066,7 +1077,7 @@ main {
 
       div.header {
         position: relative;
-        //border: 1px solid red;
+        border: 1px solid red;
         font-size: 22px;
         height: 24px;
         padding: 2px;
@@ -1091,7 +1102,7 @@ main {
 
       div.todosContainer {
         box-sizing: border-box;
-
+        border: 1px solid pink;
         padding: 0px;
         min-height: 200px;
 
@@ -1224,7 +1235,6 @@ main {
 
 // ------------------------------- FOOTER -------------------------------------
 footer {
-
   min-width: 950px !important;
   height: 10vh;
   position: relative;
@@ -1415,6 +1425,119 @@ footer {
 }
 // --------------------------- CLOSE EYE CLOSING CSS --------------------------
 
+
+// ------------------------------- MEDIA QUERIES ------------------------------
+
+@media (min-height: 800px) {
+  // ------------------------------- HEADER -----------------------------------
+  header {
+
+    .date {
+      font-size: 2vh !important;
+    }
+
+    .logo {
+      img {
+        width: 9vh !important;
+      }
+    }
+
+    section.googleSearch {
+
+      input {
+        padding: 0.6vh 0 !important;
+        height: 2vh;
+        width: 25vh !important;
+        font-size: 2vh !important;
+      }
+
+      i.ion-ios-search-strong {
+        top: 1vh !important;
+        font-size: 2vh !important;
+      }
+    }
+  }
+  // -----------------------------  CLOSE HEADER ------------------------------
+
+
+  // -------------------------- SECTION DASHBOARD -----------------------------
+  main {
+
+    h4 {
+      font-size: 9vh !important;
+      height: 12vh !important;
+    }
+
+    .buttonsContainer {
+
+      button {
+        margin: 0 2vh !important;
+        height: 6vh !important;
+        width: 15vh !important;
+        font-size: 2vh !important
+      }
+    }
+
+    section.todoList {
+      width: 40vh !important;
+
+      div.header {
+        font-size: 2.5vh !important;
+        height: 2.6vh !important;
+        .ion-ios-compose-outline {
+          font-size: 3vh !important;
+        }
+      }
+
+      div.todosContainer {
+        div.oneTodoTemplate {
+          width: 40vh !important;
+        }
+      }
+    }
+  }
+  // ---------------------- CLOSE SECTION DASHBOARD ---------------------------
+
+
+  // -------------------------- FOOTER ----------------------------------------
+  footer {
+
+    .ion-gear-a {
+      font-size: 3vh !important;
+    }
+
+    section.todoListButton {
+      bottom: 14px !important;
+      left: 7vh !important;
+
+      .ion-plus {
+        font-size: 3.5vh !important;
+      }
+    }
+
+    section.picCredit {
+      font-size:  1.5vh !important;
+    }
+
+    // options popup
+    .logoutpopup {
+      border: 1px solid red;
+      width: 50vh !important;
+      bottom: 5vh !important;
+
+      div.container {
+        padding: 1vh 0 !important;
+        font-size: 2vh !important;
+      }
+    }
+
+    // todo list is located in the main div
+  }
+
+  // ------------------------ CLOSE FOOTER ------------------------------------
+
+}
+// --------------------------- CLOSE MEDIA QUERIES ----------------------------
 
 
 
