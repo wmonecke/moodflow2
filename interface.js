@@ -5,79 +5,65 @@ if(location.search !== "?foo") {
     throw new Error();  // load everything on the next page;                // stop execution on this page
 }
 
-var jic = {
-        /**
-         * Receives an Image Object (can be JPG OR PNG) and returns a new Image Object compressed
-         * @param {Image} source_img_obj The source Image Object
-         * @param {Integer} quality The output quality of Image Object
-         * @param {String} output format. Possible values are jpg and png
-         * @return {Image} result_image_obj The compressed Image Object
-         */
-
-        compress: function(source_img_obj, quality, output_format){
-
-             var mime_type = "image/jpeg";
-             if(typeof output_format !== "undefined" && output_format=="png"){
-                mime_type = "image/png";
-             }
-
-
-             var cvs = document.createElement('canvas');
-             cvs.width = source_img_obj.naturalWidth;
-             cvs.height = source_img_obj.naturalHeight;
-             var ctx = cvs.getContext("2d").drawImage(source_img_obj, 0, 0);
-             var newImageData = cvs.toDataURL(mime_type, quality/100);
-             var result_image_obj = new Image();
-             result_image_obj.src = newImageData;
-             return result_image_obj;
-     }
-};
 var isOpen = false;
 var user = {};
-var savedBackground = {};
+var savedBackground;
 var _now = new Date();
 var today = _now.getDate();
 var myDataContainer = [];
+var savedUser;
+
 
 // start app handler
 bootstrapApp();
 function bootstrapApp() {
-	// check if user exists, if not show login form.
-	var savedUser;
-	chrome.storage.sync.get(savedUser, function(foundUser) {
-		if (foundUser.name === undefined || '') {
-			$('body, .background').fadeIn(800);
-			$('.logo, .date, footer, section.dashboard, section.googleSearch').css('display', 'none');
-			$('section.welcomeMessage, .darkenBackground').css('display', 'flex');
-			typedjs();
-			return;
-		}
 
-		user = foundUser;
+    chrome.storage.local.get(savedBackground, function(foundBackground) {
+        savedBackground = foundBackground;
 
-		// this function is in charge of displaying stuff in the dashboard
-		// for example it is in charge of displaying the users name, searchbar or quotes
-        checkIfMoodsShouldReset();
-        renderDashboard();
-        renderNormalTodo();
-		//formatDataForChart();
-		return;
-	});
+        if (savedBackground.dataURL === undefined || '') {
+            console.log('NO BACKGROUND');
+            $('body').css('display', 'block');
+            $('.spinnerContainer').css('display', 'flex');
+            getBackgroundAPI();
+        } else {
+            base64ToImgAndDisplay();
+        }
 
-	var savedBackground;
-	chrome.storage.local.get(savedBackground, function(foundBackground) {
-		savedBackground = foundBackground;
 
-		if (foundBackground.dataURL === undefined || '') {
-			$('.spinnerContainer').css('display', 'flex');
-			getBackgroundAPI();
-			return;
-		}
 
-		// get locally saved user and display
-		base64ToImgAndDisplay();
-		return;
-	});
+        // get locally saved user and display
+    	chrome.storage.sync.get(savedUser, function(foundUser) {
+
+            // check if user exists, if not show login form.
+    		if (foundUser.name === undefined || '') {
+    			$('body, .background').fadeIn(800);
+    			$('.logo, .date, footer, section.dashboard, section.googleSearch').css('display', 'none');
+    			$('section.welcomeMessage, .darkenBackground').css('display', 'flex');
+    			typedjs();
+    			return;
+    		}
+
+    		user = foundUser;
+
+    		// this function is in charge of displaying stuff in the dashboard
+    		// for example it is in charge of displaying the users name, searchbar or quotes
+            checkIfMoodsShouldReset();
+            renderDashboard();
+            renderNormalTodo();
+    		//formatDataForChart();
+    		return;
+    	});
+
+
+        return;
+    });
+
+
+
+
+
+
 }
 // ---------------------- DEFINING USER CONSTRUCTOR----------------------------
 function User(
@@ -146,22 +132,17 @@ let _name, _email, _gender, _timezone, _myLocation;
 // ------------------------------ FUNCTIONS -----------------------------------
 // handle backgroundImage
 function base64ToImgAndDisplay() { // gets compressed base64 and backgroundImageInfo
-	var savedBackground;
-	chrome.storage.local.get(savedBackground, function(foundBackground) {
+	$('#background').on('load', function() {
+		$('body, .background').fadeIn(400);
+	}).attr('src', savedBackground.dataURL);
 
-        console.log('foundBackground', foundBackground);
-		$('#background').on('load', function() {
-			$('body, .background').fadeIn(350);
-		}).attr('src', foundBackground.dataURL);
-
-        if (foundBackground.location === undefined) {
-            $('#picLocation').html('Planet Earth');
-            $('#picAuthor').html(`Photo: <a style="color: rgba(255, 255, 255, 0.8);" class="myAnchor" href="${foundBackground.user.links.html}?utm_source=moodflow&utm_medium=referral&utm_campaign=api-credit">${foundBackground.user.name}</a> / <a class="myAnchor" style="color: rgba(255, 255, 255, 0.8);" href="https://unsplash.com/">Unsplash</a>`);
-        } else {
-            $('#picLocation').html(foundBackground.location.title);
-            $('#picAuthor').html(`Photo: <a class="myAnchor" style="color: rgba(255, 255, 255, 0.8);" href="${foundBackground.user.links.html}?utm_source=moodflow&utm_medium=referral&utm_campaign=api-credit">${foundBackground.user.name}</a> / <a style="color: rgba(255, 255, 255, 0.8);" class="myAnchor" href="https://unsplash.com/">Unsplash</a>`);
-        }
-	});
+    if (savedBackground.location === undefined) {
+        $('#picLocation').html('Planet Earth');
+        $('#picAuthor').html(`Photo: <a style="color: rgba(255, 255, 255, 0.8);" class="myAnchor" href="${savedBackground.user.links.html}?utm_source=moodflow&utm_medium=referral&utm_campaign=api-credit">${savedBackground.user.name}</a> / <a class="myAnchor" style="color: rgba(255, 255, 255, 0.8);" href="https://unsplash.com/">Unsplash</a>`);
+    } else {
+        $('#picLocation').html(savedBackground.location.title);
+        $('#picAuthor').html(`Photo: <a class="myAnchor" style="color: rgba(255, 255, 255, 0.8);" href="${savedBackground.user.links.html}?utm_source=moodflow&utm_medium=referral&utm_campaign=api-credit">${savedBackground.user.name}</a> / <a style="color: rgba(255, 255, 255, 0.8);" class="myAnchor" href="https://unsplash.com/">Unsplash</a>`);
+    }
 }
 function getBackgroundAPI(frequencyEmitter) { // AJAX Unsplash API --> compressImageAndSave()
 	// background image AJAX
@@ -223,7 +204,7 @@ function compressImageAndSave(frequencyEmitter) {
 	let compressedSRC;
 
 	//An Integer from 0 to 100
-	let quality = 30;
+	let quality = 35;
 	// output file format (jpg || png)
 	let output_format = 'jpg';
 	//This function returns an Image Object
@@ -267,7 +248,7 @@ function startMeditation() { //fadesIn the meditation section
         ion.sound.play("relaxing");
 
         $("#welcomeMessage").typed({
-            strings: [`Welcome, ${user.name}.`, "Since this is your first time here...^1000<br> I hereby welcome you warmly^1000 to the meditation center.", `Now, ${user.name}...^1000 Meditation can be a very powerful tool^1000 if used right.<br>^1000 It has been proven to be as effective as medication in the treatment of depression and bipolarity.`, `And if you thankfully do not suffer from those diseases,^1000<br> it channels your thoughts towards the potential that lies^500 within you.`,     `Meditation helps you reflect on the problems that you are currently facing in your life^1000<br>and makes it easier for you to find the solutions.`, "Together we can realize your full potential^1000<br>and gain control of your inner emotional well-being.", "Moreover, if you find inner peace^1000<br>it will positively reflect onto other aspects of your life.", "Relax^1000, focus on your breathing^1000<br>and firstly try to think about the things you are gratefull in this life.<br>^1000", `Now... ^2000 Try syncing your breathing with the glow of the circle.<br>^1000 Let us start.^1000`],
+            strings: [`Welcome, ${user.name}.`, "Since this is your first time here...^1000<br> I hereby welcome you warmly^1000 to the meditation center.", `Now, ${user.name}...^1000 Meditation can be a very powerful tool^1000 if used right.<br>^1000 It has been proven to be as effective as medication in the treatment of depression and bipolarity.`, `And if you thankfully do not suffer from those diseases,^1000<br> it channels your thoughts towards the potential that lies^500 within you.`,     `Meditation helps you reflect on the problems that you are currently facing in your life^1000<br>and makes it easier for you to find the solutions.`, "Together we can realize your full potential^1000<br>and gain control of your inner emotional well-being.", "Moreover, if you find inner peace^1000<br>it will positively reflect onto other aspects of your life.", "Relax^1000, focus on your breathing^1000<br>and firstly try to think about the things you are grateful in this life.<br>^1000", `Now... ^2000 Try syncing your breathing with the glow of the circle.<br>^1000 Let us start.^1000`],
             typeSpeed: 10,
             startDelay: 2000,
             backDelay: 2000,
@@ -300,7 +281,7 @@ function startMeditation() { //fadesIn the meditation section
         ion.sound.play("relaxing");
 
         $("#hasMeditated").typed({
-            strings: [`Welcome back, ${user.name}.`, `When meditating, try syncing your breathing with the glow of the circle.^1000`, `Also, try and make and effort to focus^1000<br> on the things that you are gratefull for.^1000`, `Let us start.^2000`],
+            strings: [`Welcome back, ${user.name}.`, `When meditating, try syncing your breathing with the glow of the circle.^1000`, `Also, try and make and effort to focus^1000<br> on the things that you are grateful for.^1000`, `Let us start.^2000`],
             typeSpeed: 10,
             startDelay: 2000,
             backDelay: 2000,
@@ -362,19 +343,21 @@ function typedjs() {
 	$(".typed").typed({
 		strings: [
 			'this will take less than a minute...',
-			'i promise!',
-			'you know we are...^1000 arranging stuff',
-			'very very complex stuff^1000',
-			'you see how the color of the letters is changing?',
-			'cool stuff... ^1000 right? :)',
-			'i am so excited that i will get to know you in a few...',
-			'for real i dont tell this to everybody',
-			'just to you...^1000 i am such a romantic ',
-			'almost finished loading!^1000 count to 10 and we will be done',
-			'anytime now',
-			'so close!^1000 ...for real now',
-			'internet these days...',
-			'and we are readyyy!'
+			'we promise!',
+            'you have to be connected to the internet for this to work',
+			'we are cleaning up so it looks pixel-perfect',
+			'...^1000 somebody really left a mess in there',
+			'ok guys!^1000 hurry up, we have a customer waiting',
+			'do not worry, the dashboard is almost ready',
+			'in the meanwhile...^1500 do you see how the colors change?',
+			'reaaally cool^3000',
+			'ok guys we really gotta hurry up^1500',
+			'you know I am not good at small talk',
+			'anytime now...',
+			'the final touches an^400n^400n^400d...',
+			'the internet these days...^1500 damn it',
+			'and we are readyyy!^5000',
+            'if it has not loaded check your internet connection and re open a new tab'
 		],
 		typeSpeed: 20,
 		startDelay: 3000,
@@ -430,15 +413,34 @@ function whichAnimationEvent() {
 function checkEmailLength() {
 	var input = $('.emailInput').val();
 
-	if (input.length >= 16) {
-		$('.emailInput').css('font-size', '32px');
-	}
+    var _docHeight = (document.height !== undefined) ? document.height : document.body.offsetHeight;
 
-	if (input.length >= 20) {
-		console.log('longer then 20');
-		$('.emailInput').css('font-size', '27px');
-		return;
-	}
+    console.log('_docHeight', _docHeight);
+
+    if (_docHeight >= 800) {
+
+        if (input.length >= 16) {
+            $('.emailInput').css('font-size', '4vh');
+        }
+
+        if (input.length >= 20) {
+            console.log('longer then 20');
+            $('.emailInput').css('font-size', '3vh');
+            return;
+        }
+    } else {
+
+        if (input.length >= 16) {
+            $('.emailInput').css('font-size', '32px');
+        }
+
+        if (input.length >= 20) {
+            console.log('longer then 20');
+            $('.emailInput').css('font-size', '27px');
+            return;
+        }
+    }
+
 }
 function formatDataForChart() {
 
@@ -471,129 +473,259 @@ function updateChart(array) {
 	// --------------------------- DEFINING CHART ---------------------------------
 	let ctx = document.getElementById("myChart");
 	let daysInCurrentMonth = new Date(_now.getFullYear(), _now.getMonth() + 1, 0).getDate();
+    var _docHeight = (document.height !== undefined) ? document.height : document.body.offsetHeight;
 
-	let myChart = new Chart(ctx, {
-		type: 'line',
-		data: {
-			datasets: [{
-				data: array,
-				backgroundColor: 'rgba(247,218,13, 0.5)',
-				borderColor: 'gold',
-        pointRadius: 6,
-        pointHoverRadius: 10,
-				pointBackgroundColor: 'rgba(255,255,255,1)',
-				pointBorderColor: '#fff',
-				pointHoverBackgroundColor: 'rgba(0,0,0,1)',
-				pointHoverBorderColor: 'black'
-			}]
-		},
-		options: {
-			maintainAspectRatio: false,
-			responsive: true,
-			animation: {
-				duration: 400,
-				easing: 'easeOutQuart'
-			},
-			tooltips: {
-        enabled: true,
-        backgroundColor: 'rgba(0,0,0,0)',
-		bodyFontSize: 14,
-		titleFontSize: 14,
-		footerFontSize: 12,
-	    callbacks: {
-			title: (tooltipItem, data) => {
+    if (_docHeight >= 800) {
+        console.log('creating chart for 800px and more');
 
-				let now = new Date();
-				let myArray = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-				let currentMonth = now.getMonth();
-                setTimeout(() => {
-                    $('#displayTooltipTitle').html(myArray[currentMonth] + ', ' + tooltipItem[0].xLabel);
-                }, 250);
-				//return myArray[currentMonth] + ', ' + tooltipItem[0].xLabel;
+        let myChart = new Chart(ctx, {
+    		type: 'line',
+    		data: {
+    			datasets: [{
+    				data: array,
+    				backgroundColor: 'rgba(247,218,13, 0.5)',
+    				borderColor: 'gold',
+            pointRadius: 8,
+            pointHoverRadius: 10,
+    				pointBackgroundColor: 'rgba(255,255,255,1)',
+    				pointBorderColor: '#fff',
+    				pointHoverBackgroundColor: 'rgba(0,0,0,1)',
+    				pointHoverBorderColor: 'black'
+    			}]
+    		},
+    		options: {
+    			maintainAspectRatio: false,
+    			responsive: true,
+    			animation: {
+    				duration: 400,
+    				easing: 'easeOutQuart'
+    			},
+    			tooltips: {
+            enabled: true,
+            backgroundColor: 'rgba(0,0,0,0)',
+    		bodyFontSize: 20,
+    		titleFontSize: 14,
+    		footerFontSize: 20,
+    	    callbacks: {
+    			title: (tooltipItem, data) => {
 
-			},
-			beforeLabel: (tooltipItems, data) => {
-                // make title and header invisble
-                $('.yourMoodflow').addClass('makeSpanTransparent');
-                $('div.headerContainer, footer').fadeOut(500);
-                // fadeIn Container
-                $('div.tooltipContainer').fadeIn(1000);
-
-                let displayComment = $('#displayTooltipComment');
-                let newIndex = tooltipItems.xLabel;
-
-                // check if the current point that is hovered on is the same one or a different one
-                if (newIndex !== currentIndex) {
-                    console.log('changed node');
-
-                    $('#displayTooltipTitle, #displayTooltipComment, .moodHighlight, #displayTooltipMoodvalue').css({'color': 'transparent', 'text-shadow': '0 0 5px rgba(255,255,255,0.1)'});
-
-                    let comment = user[tooltipItems.xLabel.toString()].moodComment;
-
-                    comment = comment.substr(0, 1).toUpperCase() + comment.substr(1);
-
+    				let now = new Date();
+    				let myArray = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    				let currentMonth = now.getMonth();
                     setTimeout(() => {
-                        displayComment.html(comment);
+                        $('#displayTooltipTitle').html(myArray[currentMonth] + ', ' + tooltipItem[0].xLabel);
                     }, 250);
-                    setTimeout(() => {
-                        $('#displayTooltipTitle, #displayTooltipComment, #displayTooltipMoodvalue').css({'color': 'white', 'text-shadow': 'none'});
-                        $('.moodHighlight').css({'color': 'gold', 'text-shadow': 'none'});
-                    }, 500);
+    				//return myArray[currentMonth] + ', ' + tooltipItem[0].xLabel;
 
-                    currentIndex = tooltipItems.xLabel;
-                }
-                //return ['', comment, ''];
-			    },
-			    label: (tooltipItems, data) => {
-                    setTimeout(() => {
+    			},
+    			beforeLabel: (tooltipItems, data) => {
+                    // make title and header invisble
+                    $('.yourMoodflow').addClass('makeSpanTransparent');
+                    $('div.headerContainer, footer').fadeOut(500);
+                    // fadeIn Container
+                    $('div.tooltipContainer').fadeIn(1000);
 
-                        $('.moodHighlight').html(tooltipItems.yLabel);
+                    let displayComment = $('#displayTooltipComment');
+                    let newIndex = tooltipItems.xLabel;
+
+                    // check if the current point that is hovered on is the same one or a different one
+                    if (newIndex !== currentIndex) {
+                        console.log('changed node');
+
+                        $('#displayTooltipTitle, #displayTooltipComment, .moodHighlight, #displayTooltipMoodvalue').css({'color': 'transparent', 'text-shadow': '0 0 5px rgba(255,255,255,0.1)'});
+
+                        let comment = user[tooltipItems.xLabel.toString()].moodComment;
+
+                        comment = comment.substr(0, 1).toUpperCase() + comment.substr(1);
+
+                        setTimeout(() => {
+                            displayComment.html(comment);
+                        }, 250);
+                        setTimeout(() => {
+                            $('#displayTooltipTitle, #displayTooltipComment, #displayTooltipMoodvalue').css({'color': 'white', 'text-shadow': 'none'});
+                            $('.moodHighlight').css({'color': 'gold', 'text-shadow': 'none'});
+                        }, 500);
+
+                        currentIndex = tooltipItems.xLabel;
+                    }
+                    //return ['', comment, ''];
+    			    },
+    			    label: (tooltipItems, data) => {
+                        setTimeout(() => {
+
+                            $('.moodHighlight').html(tooltipItems.yLabel);
+                        }, 250);
+
+
+                    //return 'my mood: ' + tooltipItems.yLabel + ' / 10';
+    			   }
+    	    }
+    			},
+    			legend: {
+    				display: false,
+    				labels: {
+    					fontColor: 'white'
+    				}
+    			},
+    			scales: {
+    				xAxes: [{
+    					gridLines: {
+    						color: "rgba(255,255,255,0.0)",
+    						zeroLineColor: "rgba(255,255,255,0.05)"
+    					},
+    					ticks: {
+                            fontSize: 25,
+    						fontColor: "white",
+    						beginAtZero: false,
+    						min: 1,
+    						max: daysInCurrentMonth,
+    						fixedStepSize: 1
+    					},
+    					type: 'linear',
+    					position: 'bottom'
+    				}],
+    				yAxes: [{
+    					gridLines: {
+    						color: "rgba(255,255,255,0.0)",
+    						zeroLineColor: "rgba(255,255,255,0.5)"
+    					},
+    					ticks: {
+    						fontColor: "rgba(200, 200, 200, 0.25)",
+    						beginAtZero: true,
+    						max: 10,
+    						fixedStepSize: 1
+    					},
+    					type: 'linear',
+    				}],
+    			}
+
+    		}
+    	});
+
+    } else {
+    	let myChart = new Chart(ctx, {
+    		type: 'line',
+    		data: {
+    			datasets: [{
+    				data: array,
+    				backgroundColor: 'rgba(247,218,13, 0.5)',
+    				borderColor: 'gold',
+            pointRadius: 6,
+            pointHoverRadius: 10,
+    				pointBackgroundColor: 'rgba(255,255,255,1)',
+    				pointBorderColor: '#fff',
+    				pointHoverBackgroundColor: 'rgba(0,0,0,1)',
+    				pointHoverBorderColor: 'black'
+    			}]
+    		},
+    		options: {
+    			maintainAspectRatio: false,
+    			responsive: true,
+    			animation: {
+    				duration: 400,
+    				easing: 'easeOutQuart'
+    			},
+    			tooltips: {
+            enabled: true,
+            backgroundColor: 'rgba(0,0,0,0)',
+    		bodyFontSize: 14,
+    		titleFontSize: 14,
+    		footerFontSize: 12,
+    	    callbacks: {
+    			title: (tooltipItem, data) => {
+
+    				let now = new Date();
+    				let myArray = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    				let currentMonth = now.getMonth();
+                    setTimeout(() => {
+                        $('#displayTooltipTitle').html(myArray[currentMonth] + ', ' + tooltipItem[0].xLabel);
                     }, 250);
+    				//return myArray[currentMonth] + ', ' + tooltipItem[0].xLabel;
+
+    			},
+    			beforeLabel: (tooltipItems, data) => {
+                    // make title and header invisble
+                    $('.yourMoodflow').addClass('makeSpanTransparent');
+                    $('div.headerContainer, footer').fadeOut(500);
+                    // fadeIn Container
+                    $('div.tooltipContainer').fadeIn(1000);
+
+                    let displayComment = $('#displayTooltipComment');
+                    let newIndex = tooltipItems.xLabel;
+
+                    // check if the current point that is hovered on is the same one or a different one
+                    if (newIndex !== currentIndex) {
+                        console.log('changed node');
+
+                        $('#displayTooltipTitle, #displayTooltipComment, .moodHighlight, #displayTooltipMoodvalue').css({'color': 'transparent', 'text-shadow': '0 0 5px rgba(255,255,255,0.1)'});
+
+                        let comment = user[tooltipItems.xLabel.toString()].moodComment;
+
+                        comment = comment.substr(0, 1).toUpperCase() + comment.substr(1);
+
+                        setTimeout(() => {
+                            displayComment.html(comment);
+                        }, 250);
+                        setTimeout(() => {
+                            $('#displayTooltipTitle, #displayTooltipComment, #displayTooltipMoodvalue').css({'color': 'white', 'text-shadow': 'none'});
+                            $('.moodHighlight').css({'color': 'gold', 'text-shadow': 'none'});
+                        }, 500);
+
+                        currentIndex = tooltipItems.xLabel;
+                    }
+                    //return ['', comment, ''];
+    			    },
+    			    label: (tooltipItems, data) => {
+                        setTimeout(() => {
+
+                            $('.moodHighlight').html(tooltipItems.yLabel);
+                        }, 250);
 
 
-                //return 'my mood: ' + tooltipItems.yLabel + ' / 10';
-			   }
-	    }
-			},
-			legend: {
-				display: false,
-				labels: {
-					fontColor: 'white'
-				}
-			},
-			scales: {
-				xAxes: [{
-					gridLines: {
-						color: "rgba(255,255,255,0.0)",
-						zeroLineColor: "rgba(255,255,255,0.05)"
-					},
-					ticks: {
-						fontColor: "white",
-						beginAtZero: false,
-						min: 1,
-						max: daysInCurrentMonth,
-						fixedStepSize: 1
-					},
-					type: 'linear',
-					position: 'bottom'
-				}],
-				yAxes: [{
-					gridLines: {
-						color: "rgba(255,255,255,0.0)",
-						zeroLineColor: "rgba(255,255,255,0.5)"
-					},
-					ticks: {
-						fontColor: "rgba(200, 200, 200, 0.25)",
-						beginAtZero: true,
-						max: 10,
-						fixedStepSize: 1
-					},
-					type: 'linear',
-				}],
-			}
+                    //return 'my mood: ' + tooltipItems.yLabel + ' / 10';
+    			   }
+    	    }
+    			},
+    			legend: {
+    				display: false,
+    				labels: {
+    					fontColor: 'white'
+    				}
+    			},
+    			scales: {
+    				xAxes: [{
+    					gridLines: {
+    						color: "rgba(255,255,255,0.0)",
+    						zeroLineColor: "rgba(255,255,255,0.05)"
+    					},
+    					ticks: {
+    						fontColor: "white",
+    						beginAtZero: false,
+    						min: 1,
+    						max: daysInCurrentMonth,
+    						fixedStepSize: 1
+    					},
+    					type: 'linear',
+    					position: 'bottom'
+    				}],
+    				yAxes: [{
+    					gridLines: {
+    						color: "rgba(255,255,255,0.0)",
+    						zeroLineColor: "rgba(255,255,255,0.5)"
+    					},
+    					ticks: {
+    						fontColor: "rgba(200, 200, 200, 0.25)",
+    						beginAtZero: true,
+    						max: 10,
+    						fixedStepSize: 1
+    					},
+    					type: 'linear',
+    				}],
+    			}
 
-		}
-	});
+    		}
+    	});
+    }
 }
 function saveTodo(input) {
     if (user.todo[1] === undefined) {
@@ -978,8 +1110,6 @@ function injectYTVideo() {
 }
 // ------------------------- JQUERY DOM EVENTS LOGIC --------------------------
 $(document).ready(() => {
-    console.log('document is ready and isOpen:', isOpen);
-
 	// ------------------------ DASHBOARD LOGIC -----------------------------------
 	// ***HEADER*** google searchbar animation and palceholder logic
 	$('#placeholder').on('click', () => {
@@ -1005,9 +1135,14 @@ $(document).ready(() => {
 	});
 
 	// ***HEADER*** date logic and format
-	let day = moment().format('dddd'); // monday
-	let monthDaynum = moment().format('MMMM Do'); // May 15th
-	$('.date').html(`${day}, ${monthDaynum}`);
+    let now = new Date();
+    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+    var day = days[ now.getDay() ];
+    var dayNum = now.getDay();
+    var monthDaynum = months[ now.getMonth() ];
+	$('.date').html(`${day}, ${monthDaynum} ${dayNum}`);
 
     // ---------------------- 3 MAIN BUTTONS LOGIC ----------------------------
 
@@ -1410,8 +1545,21 @@ $(document).ready(() => {
     });
 
     $('.commentInput').focus(function() {
-        $(this).css('width', '350px');
-        $('.skipButton').css('left', '140px');
+
+        var _docHeight = (document.height !== undefined) ? document.height : document.body.offsetHeight;
+
+        if (_docHeight >= 800) {
+            $('.commentInput').css('width', '34vh');
+            $('.skipButton').css('left', '14vh');
+            console.log('bigger than 800');
+        } else {
+            console.log('smaller than 800');
+            $('.commentInput').css('width', '350px');
+            $('.skipButton').css('left', '140px');
+        }
+
+
+
         setTimeout(() => {
             $('.submitButton').fadeIn(500);
         }, 300);
