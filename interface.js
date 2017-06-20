@@ -972,10 +972,20 @@ function renderDashboard(emitter) {
 
     chrome.storage.sync.get(user, function(foundUser){
         var skip;
+        var skipRenderChart;
 
         user = foundUser;
 
         $('.greeting').html(`Good day, ${user.name}.`);
+
+        // render todays date
+        let now = new Date();
+        var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        var day = days[ now.getDay() ];
+        var dayNum = now.getDate();
+        var monthDaynum = months[ now.getMonth() ];
+    	$('.date').html(`${day}, ${monthDaynum} ${dayNum}`);
 
         let todayAsAString = today.toString();
 
@@ -983,6 +993,9 @@ function renderDashboard(emitter) {
             console.log('undefined');
         } else if (user[todayAsAString].moodValue === '' || undefined) {
             console.log('user[todayAsAString] in hereeee!!!');
+
+            // this means that the user has not submitted the mood today. The chart should only render once user submits
+            skipRenderChart = true;
             $('section.moodInput').css('display', 'block');
             $('section.dashboard').css('display', 'none');
 
@@ -1079,6 +1092,12 @@ function renderDashboard(emitter) {
 
         // users name in moodflow input
         $('.moodInputGreeting').html(`Good day, ${user.name}.`);
+
+        if (skipRenderChart) {
+            console.log('skipping render Chart');
+            return;
+        }
+
         formatDataForChart();
     });
 }
@@ -1134,15 +1153,6 @@ $(document).ready(() => {
 		}, 310);
 	});
 
-	// ***HEADER*** date logic and format
-    let now = new Date();
-    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-
-    var day = days[ now.getDay() ];
-    var dayNum = now.getDay();
-    var monthDaynum = months[ now.getMonth() ];
-	$('.date').html(`${day}, ${monthDaynum} ${dayNum}`);
 
     // ---------------------- 3 MAIN BUTTONS LOGIC ----------------------------
 
@@ -1614,6 +1624,8 @@ $(document).ready(() => {
 
             if (user.cleanMode === false) {
                 $('section.dashboard').fadeIn(500);
+            } else if (user.cleanMode) {
+                $('section.dashboard').css('display', 'none');
             }
 
             $('div.headerContainer, footer').fadeIn(500);
@@ -1680,6 +1692,7 @@ $(document).ready(() => {
             $('section.landscapeButtons').fadeIn(500).css('display', 'flex');
 
 			chrome.storage.sync.set({ "cleanMode": true }, function() {
+                user.cleanMode = true;
 				console.log('cleanMode to true');
 			});
 		} else if (checked === false) {

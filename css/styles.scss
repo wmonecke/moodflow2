@@ -1238,6 +1238,7 @@ footer {
     bottom: 16px;
     left: 24px;
     transition: color .5s ease;
+    z-index: 2;
     &:hover {
       color: rgba(255, 255, 255, 1);
     }
@@ -1258,6 +1259,7 @@ footer {
     font-weight: 100;
     color: white;
     text-align: left;
+    z-index: 2;
 
     // general container
     div.container {
@@ -1354,6 +1356,7 @@ footer {
     position: absolute;
     bottom: 14px;
     left: 64px;
+    z-index: 2;
 
     .ion-plus {
       cursor: pointer;
@@ -1672,7 +1675,7 @@ footer {
 
           div.todoText {
             height: 3.4vh !important;
-            width: 38.5vh !important;
+            width: 38vh !important;
             font-size: 2.1vh !important;
           }
           span.eraseTodo {
